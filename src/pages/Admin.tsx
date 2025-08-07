@@ -497,7 +497,7 @@ const Admin: React.FC = () => {
                             <span className="text-gray-300">AI Generated</span>
                           </label>
                         </div>
-                      </section>
+                      </fieldset>
 
                       <section>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
