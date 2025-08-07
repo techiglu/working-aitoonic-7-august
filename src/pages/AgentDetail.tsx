@@ -107,7 +107,7 @@ function AgentDetail() {
       )}
 
       <main className="min-h-screen bg-royal-dark py-20">
-        <article className="container mx-auto px-4">
+        <div className="container mx-auto px-4">
           {/* Breadcrumbs */}
           <nav className="flex items-center space-x-2 text-sm mb-8 overflow-x-auto whitespace-nowrap pb-2">
             <Link to="/" className="text-gray-400 hover:text-white">Home</Link>
@@ -118,7 +118,7 @@ function AgentDetail() {
           </nav>
 
           {/* Hero Section */}
-          <section className="bg-royal-dark-card rounded-2xl overflow-hidden border border-royal-dark-lighter mb-12">
+          <article className="bg-royal-dark-card rounded-2xl overflow-hidden border border-royal-dark-lighter mb-12">
             <figure className="aspect-video">
               <LazyImage
                 src={agent.image_url || 'https://i.imgur.com/NXyUxX7.png'}
@@ -130,12 +130,12 @@ function AgentDetail() {
               />
             </figure>
             
-            <article className="p-4 sm:p-8">
+            <section className="p-4 sm:p-8">
               <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-6 space-y-4 sm:space-y-0">
-                <hgroup className="flex-1">
-                  <section className="flex items-center space-x-4 mb-4">
+                <div className="flex-1">
+                  <header className="flex items-center space-x-4 mb-4">
                     <Bot className="w-12 h-12 text-royal-gold" />
-                    <hgroup>
+                    <div>
                       <h1 className="text-3xl font-bold gradient-text">{agent.name}</h1>
                       <aside className="flex items-center mt-2">
                         <Star className="w-5 h-5 text-royal-gold" fill="currentColor" />
@@ -145,10 +145,10 @@ function AgentDetail() {
                         <Star className="w-5 h-5 text-royal-gold" fill="currentColor" />
                         <mark className="ml-2 text-gray-300">(50+ reviews)</mark>
                       </aside>
-                    </hgroup>
-                  </section>
+                    </div>
+                  </header>
                   <p className="text-gray-300 text-lg">{agent.description}</p>
-                </hgroup>
+                </div>
                 {agent.pricing_type && (
                   <mark className="text-sm font-medium px-4 py-2 rounded-full bg-royal-dark text-royal-gold">
                     {agent.pricing_type}
@@ -158,28 +158,28 @@ function AgentDetail() {
 
               <aside className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 {agent.is_available_24_7 && (
-                  <section className="flex items-center space-x-3 text-gray-300">
+                  <div className="flex items-center space-x-3 text-gray-300">
                     <Clock className="w-5 h-5 text-royal-gold flex-shrink-0" />
                     <p>24/7 Available</p>
-                  </section>
+                  </div>
                 )}
                 {agent.user_count > 0 && (
-                  <section className="flex items-center space-x-3 text-gray-300">
+                  <div className="flex items-center space-x-3 text-gray-300">
                     <Users className="w-5 h-5 text-royal-gold flex-shrink-0" />
                     <p>{agent.user_count.toLocaleString()}+ users</p>
-                  </section>
+                  </div>
                 )}
                 {agent.has_fast_response && (
-                  <section className="flex items-center space-x-3 text-gray-300">
+                  <div className="flex items-center space-x-3 text-gray-300">
                     <Zap className="w-5 h-5 text-royal-gold flex-shrink-0" />
                     <p>Fast Response</p>
-                  </section>
+                  </div>
                 )}
                 {agent.is_secure && (
-                  <section className="flex items-center space-x-3 text-gray-300">
+                  <div className="flex items-center space-x-3 text-gray-300">
                     <Shield className="w-5 h-5 text-royal-gold flex-shrink-0" />
                     <p>Secure & Private</p>
-                  </section>
+                  </div>
                 )}
               </aside>
 
@@ -196,35 +196,35 @@ function AgentDetail() {
                   </a>
                 </nav>
               )}
-            </article>
-          </section>
+            </section>
+          </article>
 
-          <section className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Main Content */}
-            <article className="lg:col-span-3">
+            <section className="lg:col-span-3">
               {/* Capabilities */}
               {agent.capabilities && agent.capabilities.length > 0 && (
-                <section className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter mb-12">
+                <article className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter mb-12">
                   <h2 className="text-2xl font-bold mb-6">Capabilities</h2>
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {agent.capabilities.map((capability, index) => (
                       <li key={index} className="flex items-start space-x-3">
                         <Check className="w-5 h-5 text-royal-gold mt-1 flex-shrink-0" />
-                        <article>
+                        <div>
                           <h3 className="font-semibold text-white mb-1">{capability}</h3>
                           <p className="text-gray-400 text-sm">
                             Detailed explanation of how {agent.name} handles {capability.toLowerCase()}.
                           </p>
-                        </article>
+                        </div>
                       </li>
                     ))}
                   </ul>
-                </section>
+                </article>
               )}
 
               {/* Similar Agents */}
               {similarAgents.length > 0 && (
-                <section className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
+                <article className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
                   <h2 className="text-2xl font-bold mb-6">Similar Agents</h2>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                     {similarAgents.map((similarAgent) => (
@@ -249,11 +249,11 @@ function AgentDetail() {
                       </li>
                     ))}
                   </ul>
-                </section>
+                </article>
               )}
-            </article>
-          </section>
-        </article>
+            </section>
+          </div>
+        </div>
       </main>
     </>
   );

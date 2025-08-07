@@ -120,7 +120,7 @@ function ToolDetail() {
       )}
 
       <main className="min-h-screen bg-royal-dark py-20">
-        <article className="container mx-auto px-4">
+        <div className="container mx-auto px-4">
           {/* Breadcrumbs */}
           <nav className="flex items-center space-x-2 text-sm mb-8 overflow-x-auto whitespace-nowrap pb-2">
             <Link to="/" className="text-gray-400 hover:text-white">Home</Link>
@@ -140,7 +140,7 @@ function ToolDetail() {
           </nav>
 
           {/* Tool Details */}
-          <section className="max-w-4xl mx-auto bg-royal-dark-card rounded-2xl overflow-hidden border border-royal-dark-lighter">
+          <article className="max-w-4xl mx-auto bg-royal-dark-card rounded-2xl overflow-hidden border border-royal-dark-lighter">
             <figure className="aspect-[16/9] relative">
               <LazyImage
                 src={tool.image_url || 'https://i.imgur.com/ZXqf6Kx.png'}
@@ -153,11 +153,11 @@ function ToolDetail() {
               <aside className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             </figure>
 
-            <article className="p-4 sm:p-8">
+            <section className="p-4 sm:p-8">
               {/* Tool Name and Rating */}
               <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-6 space-y-4 sm:space-y-0">
-                <hgroup className="flex-1">
-                  <section className="flex items-center space-x-4 mb-4">
+                <div className="flex-1">
+                  <header className="flex items-center space-x-4 mb-4">
                     {tool.favicon_url ? (
                       <img 
                         src={tool.favicon_url} 
@@ -167,11 +167,11 @@ function ToolDetail() {
                     ) : (
                       <Bot className="w-12 h-12 text-royal-gold" />
                     )}
-                    <hgroup>
+                    <div>
                       <h1 className="text-3xl font-bold gradient-text">{tool.name}</h1>
-                      <aside className="flex flex-wrap items-center gap-4 mt-2">
+                      <div className="flex flex-wrap items-center gap-4 mt-2">
                         {tool.rating && (
-                          <section className="flex items-center">
+                          <div className="flex items-center">
                             {[...Array(5)].map((_, i) => (
                               <Star 
                                 key={i}
@@ -180,7 +180,7 @@ function ToolDetail() {
                               />
                             ))}
                             <mark className="ml-2 text-gray-300">({tool.rating})</mark>
-                          </section>
+                          </div>
                         )}
                         {category && (
                           <Link
@@ -190,11 +190,11 @@ function ToolDetail() {
                             {category.name}
                           </Link>
                         )}
-                      </aside>
-                    </hgroup>
-                  </section>
+                      </div>
+                    </div>
+                  </header>
                   <p className="text-gray-300 text-lg">{tool.description}</p>
-                </hgroup>
+                </div>
                 {tool.pricing && tool.pricing.length > 0 && (
                   <aside className="flex items-center space-x-2 bg-royal-dark rounded-full px-4 py-2">
                     <DollarSign className="w-5 h-5 text-royal-gold" />
@@ -204,8 +204,8 @@ function ToolDetail() {
                   </aside>
                 )}
               </header>
-
-              {/* Action Buttons */}
+            </section>
+          </article>
               <nav className="flex flex-wrap gap-4">
                 {tool.url && (
                   <a
@@ -231,44 +231,44 @@ function ToolDetail() {
           </section>
 
           {/* Features and Use Cases */}
-          <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-            <article className="lg:col-span-2 space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+            <section className="lg:col-span-2 space-y-8">
               {/* Features */}
               {tool.features && tool.features.length > 0 && (
-                <section className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
+                <article className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
                   <h2 className="text-2xl font-bold mb-6">Key Features</h2>
                   <ul className="grid md:grid-cols-2 gap-6">
                     {tool.features.map((feature, index) => (
                       <li key={index} className="flex items-start space-x-3">
-                        <article>
+                        <div>
                           <h3 className="font-semibold text-white mb-1">{feature.title}</h3>
                           <p className="text-gray-400">{feature.description}</p>
-                        </article>
+                        </div>
                       </li>
                     ))}
                   </ul>
-                </section>
+                </article>
               )}
 
               {/* Use Cases */}
               {tool.useCases && tool.useCases.length > 0 && (
-                <section className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
+                <article className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
                   <h2 className="text-2xl font-bold mb-6">Use Cases</h2>
                   <ul className="grid md:grid-cols-2 gap-6">
                     {tool.useCases.map((useCase, index) => (
                       <li key={index} className="flex items-start space-x-3">
-                        <article>
+                        <div>
                           <h3 className="font-semibold text-white mb-1">{useCase.title}</h3>
                           <p className="text-gray-400">{useCase.description}</p>
-                        </article>
+                        </div>
                       </li>
                     ))}
                   </ul>
-                </section>
+                </article>
               )}
-            </article>
-          </section>
-        </article>
+            </section>
+          </div>
+        </div>
       </main>
     </>
   );

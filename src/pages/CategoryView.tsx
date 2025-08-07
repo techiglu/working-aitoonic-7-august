@@ -89,7 +89,7 @@ function CategoryView() {
       )}
 
       <main className="min-h-screen bg-royal-dark py-20">
-        <article className="container mx-auto px-4">
+        <div className="container mx-auto px-4">
           {/* Breadcrumbs */}
           <nav className="flex items-center space-x-2 text-sm mb-8">
             <Link to="/" className="text-gray-400 hover:text-white">Home</Link>
@@ -114,38 +114,41 @@ function CategoryView() {
             )}
           </header>
 
-          <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+          <section>
+            <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
             {tools.map((tool) => (
-              <article
+              <li
                 key={tool.id}
-                className="bg-royal-dark-card rounded-xl overflow-hidden group hover:scale-105 transition-all duration-300"
               >
-                <figure className="aspect-square relative overflow-hidden">
-                  <LazyImage
-                    src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
-                    alt={tool.name}
-                    width={400}
-                    height={400}
-                    className="w-full h-full object-cover"
-                  />
-                  <aside className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <footer className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-lg font-bold text-white group-hover:text-royal-gold transition-colors">
-                      {tool.name}
-                    </h3>
-                    <p className="text-sm text-gray-300 line-clamp-2 mt-1">
-                      {tool.description}
-                    </p>
-                    <Link
-                      to={`/ai/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="sr-only"
-                    >
-                      View {tool.name}
-                    </Link>
-                  </footer>
-                </figure>
-              </article>
+                <article className="bg-royal-dark-card rounded-xl overflow-hidden group hover:scale-105 transition-all duration-300">
+                  <figure className="aspect-square relative overflow-hidden">
+                    <LazyImage
+                      src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
+                      alt={tool.name}
+                      width={400}
+                      height={400}
+                      className="w-full h-full object-cover"
+                    />
+                    <aside className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <footer className="absolute bottom-0 left-0 right-0 p-4">
+                      <h3 className="text-lg font-bold text-white group-hover:text-royal-gold transition-colors">
+                        {tool.name}
+                      </h3>
+                      <p className="text-sm text-gray-300 line-clamp-2 mt-1">
+                        {tool.description}
+                      </p>
+                      <Link
+                        to={`/ai/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
+                        className="sr-only"
+                      >
+                        View {tool.name}
+                      </Link>
+                    </footer>
+                  </figure>
+                </article>
+              </li>
             ))}
+            </ul>
           </section>
 
           {hasMore && (
@@ -158,7 +161,7 @@ function CategoryView() {
               </button>
             </footer>
           )}
-        </article>
+        </div>
       </main>
     </>
   );
