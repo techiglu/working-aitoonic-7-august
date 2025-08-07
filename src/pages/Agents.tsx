@@ -54,9 +54,11 @@ function Agents() {
               className="bg-royal-dark-card rounded-2xl overflow-hidden card-hover border border-royal-dark-lighter group"
             >
               <div className="aspect-[16/9] overflow-hidden">
-                <img
+                <LazyImage
                   src={agent.image_url || 'https://images.unsplash.com/photo-1677442136019-21780ecad995'}
                   alt={agent.name}
+                  width={400}
+                  height={225}
                   className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
                 />
               </div>

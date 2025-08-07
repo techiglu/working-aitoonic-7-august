@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-interface OptimizedLazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt: string;
   width?: number;
@@ -11,7 +11,7 @@ interface OptimizedLazyImageProps extends React.ImgHTMLAttributes<HTMLImageEleme
   quality?: number;
 }
 
-export function LazyImage({
+export function OptimizedImage({
   src,
   alt,
   width,
@@ -22,7 +22,7 @@ export function LazyImage({
   quality = 80,
   className = '',
   ...props
-}: OptimizedLazyImageProps) {
+}: OptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
   const [error, setError] = useState(false);
@@ -54,6 +54,20 @@ export function LazyImage({
     return () => observer.disconnect();
   }, [priority, isInView]);
 
+  // Generate optimized image URLs
+  const generateSrcSet = (originalSrc: string) => {
+    // For external URLs, return as-is (could be enhanced with image proxy service)
+    if (originalSrc.startsWith('http')) {
+      return originalSrc;
+    }
+
+    // For local images, generate different sizes
+    const sizes = [320, 640, 768, 1024, 1280, 1920];
+    return sizes
+      .map(size => `${originalSrc}?w=${size}&q=${quality} ${size}w`)
+      .join(', ');
+  };
+
   const handleLoad = () => {
     setIsLoaded(true);
   };
@@ -83,6 +97,8 @@ export function LazyImage({
       {(isInView || priority) && (
         <img
           src={error ? placeholder : src}
+          srcSet={error ? undefined : generateSrcSet(src)}
+          sizes={sizes}
           alt={alt}
           width={width}
           height={height}

@@ -120,9 +120,12 @@ function AgentDetail() {
           {/* Hero Section */}
           <div className="bg-royal-dark-card rounded-2xl overflow-hidden border border-royal-dark-lighter mb-12">
             <div className="aspect-video">
-              <img
+              <LazyImage
                 src={agent.image_url || 'https://i.imgur.com/NXyUxX7.png'}
                 alt={agent.name}
+                width={1200}
+                height={675}
+                priority={true}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -231,9 +234,11 @@ function AgentDetail() {
                         className="group"
                       >
                         <div className="aspect-video rounded-lg overflow-hidden mb-3">
-                          <img
+                          <LazyImage
                             src={similarAgent.image_url || 'https://i.imgur.com/NXyUxX7.png'}
                             alt={similarAgent.name}
+                            width={400}
+                            height={225}
                             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
                           />
                         </div>

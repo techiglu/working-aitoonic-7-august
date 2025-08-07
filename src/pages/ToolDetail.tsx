@@ -142,9 +142,12 @@ function ToolDetail() {
           {/* Tool Details */}
           <div className="max-w-4xl mx-auto bg-royal-dark-card rounded-2xl overflow-hidden border border-royal-dark-lighter">
             <div className="aspect-[16/9] relative">
-              <img
+              <LazyImage
                 src={tool.image_url || 'https://i.imgur.com/ZXqf6Kx.png'}
                 alt={tool.name}
+                width={1200}
+                height={675}
+                priority={true}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />

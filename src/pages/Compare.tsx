@@ -170,9 +170,12 @@ function Compare() {
                 className="bg-royal-dark-card rounded-xl overflow-hidden border border-royal-dark-lighter"
               >
                 <div className="aspect-video relative">
-                  <img
+                  <LazyImage
                     src={tool.image_url}
                     alt={tool.name}
+                    width={600}
+                    height={338}
+                    priority={true}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -298,9 +301,11 @@ function Compare() {
                     className="group"
                   >
                     <div className="aspect-video rounded-lg overflow-hidden mb-4">
-                      <img
+                      <LazyImage
                         src={tool.image_url}
                         alt={tool.name}
+                        width={300}
+                        height={169}
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
