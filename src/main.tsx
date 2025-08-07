@@ -9,7 +9,7 @@ import { ScrollToTop } from './components/ScrollToTop';
 import './index.css';
 
 // Only render if we're in the browser and not using SSR
-if (typeof window !== 'undefined' && !window.__SSR__) {
+if (typeof window !== 'undefined') {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
       <HelmetProvider>
