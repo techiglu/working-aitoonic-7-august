@@ -100,6 +100,7 @@ function Agents() {
           ))}
         </ul>
       </section>
+    </main>
   );
 }
 

@@ -106,6 +106,9 @@ function Categories() {
                 </footer>
               </article>
             ))}
+          </section>
+        </article>
+      </main>
     </>
   );
 }
