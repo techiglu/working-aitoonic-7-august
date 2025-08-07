@@ -14,6 +14,8 @@ interface CategoryWithCount {
   id: string;
   name: string;
   description: string;
+  icon?: string;
+  image_url?: string;
   tool_count: number;
 }
 
@@ -28,6 +30,8 @@ function Categories() {
           id,
           name,
           description,
+          icon,
+          image_url,
           tools (count)
         `);
 
@@ -80,8 +84,22 @@ function Categories() {
                 className="bg-royal-dark-card rounded-2xl p-8 border border-royal-dark-lighter hover:border-royal-gold group transition-all"
               >
                 <header className="flex items-center space-x-4 mb-4">
-                  <figure className="p-3 bg-royal-dark rounded-xl">
-                    <Sparkles className="w-8 h-8 text-royal-gold" />
+                  <figure className="p-3 bg-royal-dark rounded-xl overflow-hidden">
+                    {category.image_url ? (
+                      <img 
+                        src={category.image_url} 
+                        alt={category.name}
+                        className="w-8 h-8 object-cover rounded"
+                      />
+                    ) : category.icon ? (
+                      <img 
+                        src={category.icon} 
+                        alt={category.name}
+                        className="w-8 h-8 object-contain"
+                      />
+                    ) : (
+                      <Sparkles className="w-8 h-8 text-royal-gold" />
+                    )}
                   </figure>
                   <hgroup>
                     <h2 className="text-2xl font-bold text-white group-hover:text-royal-gold transition-colors">

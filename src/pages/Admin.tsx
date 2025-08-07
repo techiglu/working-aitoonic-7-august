@@ -25,6 +25,13 @@ interface EditingItem {
   description?: string;
   seo_title?: string;
   seo_description?: string;
+  image_alt?: string;
+  how_to_use?: string;
+  published_at?: string;
+  rating?: number;
+  featured?: boolean;
+  slug?: string;
+  icon?: string;
   features?: Feature[];
   useCases?: UseCase[];
   pricing?: PricingPlan[];
@@ -41,11 +48,17 @@ interface EditingItem {
   has_fast_response?: boolean;
   is_secure?: boolean;
   contentType?: string;
+  // Blog post fields
+  title?: string;
+  content?: string;
+  excerpt?: string;
+  author_id?: string;
+  cover_image?: string;
   [key: string]: any;
 }
 
 const Admin: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'tools' | 'categories' | 'agents'>('tools');
+  const [activeTab, setActiveTab] = useState<'tools' | 'categories' | 'agents' | 'blog_posts'>('tools');
   const [items, setItems] = useState<EditingItem[]>([]);
   const [filteredItems, setFilteredItems] = useState<EditingItem[]>([]);
   const [editingItem, setEditingItem] = useState<EditingItem | null>(null);
@@ -85,10 +98,29 @@ const Admin: React.FC = () => {
 
   const fetchItems = async () => {
     setLoading(true);
-    let { data: items } = await supabase
-      .from(activeTab)
-      .select('*')
-      .order('created_at', { ascending: false });
+    let query = supabase.from(activeTab);
+    
+    if (activeTab === 'tools') {
+      query = query.select(`
+        id, name, description, url, category_id, image_url, favicon_url,
+        rating, seo_title, seo_description, image_alt, how_to_use,
+        published_at, featured, slug, features, useCases, pricing, created_at
+      `);
+    } else if (activeTab === 'categories') {
+      query = query.select(`
+        id, name, description, seo_title, seo_description, slug,
+        icon, image_url, created_at
+      `);
+    } else if (activeTab === 'agents') {
+      query = query.select('*');
+    } else if (activeTab === 'blog_posts') {
+      query = query.select(`
+        id, title, content, excerpt, author_id, published_at,
+        slug, cover_image, created_at
+      `);
+    }
+    
+    const { data: items } = await query.order('created_at', { ascending: false });
     
     setItems(items || []);
     setFilteredItems(items || []);
@@ -97,7 +129,13 @@ const Admin: React.FC = () => {
 
   const validateForm = (item: EditingItem): string | null => {
     if (!item.name?.trim()) return 'Name is required';
-    if (!item.description?.trim()) return 'Description is required';
+    if (activeTab !== 'blog_posts' && !item.description?.trim()) return 'Description is required';
+    
+    if (activeTab === 'blog_posts') {
+      if (!item.title?.trim()) return 'Title is required';
+      if (!item.content?.trim()) return 'Content is required';
+      if (!item.slug?.trim()) return 'Slug is required';
+    }
     
     if (activeTab === 'tools') {
       if (!item.url?.trim()) return 'Tool URL is required';
@@ -310,6 +348,15 @@ const Admin: React.FC = () => {
               <Bot className="w-5 h-5" />
               <span>Agents</span>
             </button>
+            <button
+              onClick={() => setActiveTab('blog_posts')}
+              className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${
+                activeTab === 'blog_posts' ? 'bg-royal-gold text-royal-dark' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <span>📝</span>
+              <span>Blog Posts</span>
+            </button>
           </nav>
         </header>
 
@@ -443,31 +490,254 @@ const Admin: React.FC = () => {
                   <fieldset>
                     <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
                     <section className="space-y-4">
+                      {activeTab !== 'blog_posts' && (
+                        <section>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Name *
+                          </label>
+                          <input
+                            type="text"
+                            value={editingItem.name || ''}
+                            onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            required
+                          />
+                        </section>
+                      )}
+                      
+                      {activeTab === 'blog_posts' && (
+                        <section>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Title *
+                          </label>
+                          <input
+                            type="text"
+                            value={editingItem.title || ''}
+                            onChange={(e) => setEditingItem({ ...editingItem, title: e.target.value })}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            required
+                          />
+                        </section>
+                      )}
+
+                      {activeTab === 'blog_posts' && (
+                        <section>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Slug *
+                          </label>
+                          <input
+                            type="text"
+                            value={editingItem.slug || ''}
+                            onChange={(e) => setEditingItem({ ...editingItem, slug: e.target.value })}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="url-friendly-slug"
+                            required
+                          />
+                        </section>
+                      )}
+
+                      {activeTab === 'blog_posts' && (
+                        <section>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Excerpt
+                          </label>
+                          <textarea
+                            value={editingItem.excerpt || ''}
+                            onChange={(e) => setEditingItem({ ...editingItem, excerpt: e.target.value })}
+                            rows={3}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="Brief description for the blog post"
+                          />
+                        </section>
+                      )}
+
+                      {activeTab === 'blog_posts' && (
+                        <section>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Content *
+                          </label>
+                          <textarea
+                            value={editingItem.content || ''}
+                            onChange={(e) => setEditingItem({ ...editingItem, content: e.target.value })}
+                            rows={10}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="Write your blog post content here..."
+                            required
+                          />
+                        </section>
+                      )}
+
+                      {activeTab === 'blog_posts' && (
+                        <section>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Cover Image URL
+                          </label>
+                          <input
+                            type="text"
+                            value={editingItem.cover_image || ''}
+                            onChange={(e) => setEditingItem({ ...editingItem, cover_image: e.target.value })}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="https://example.com/cover-image.jpg"
+                          />
+                        </section>
+                      )}
+
+                      {activeTab === 'blog_posts' && (
+                        <section>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Author ID
+                          </label>
+                          <input
+                            type="text"
+                            value={editingItem.author_id || ''}
+                            onChange={(e) => setEditingItem({ ...editingItem, author_id: e.target.value })}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="Author UUID"
+                          />
+                        </section>
+                      )}
+
+                      {activeTab !== 'blog_posts' && (
+                        <section>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Description {activeTab !== 'blog_posts' ? '*' : ''}
+                          </label>
+                          <textarea
+                            value={editingItem.description || ''}
+                            onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
+                            rows={3}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            required={activeTab !== 'blog_posts'}
+                          />
+                        </section>
+                      )}
+
                       <section>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Name *
+                          Image URL
                         </label>
                         <input
                           type="text"
-                          value={editingItem.name || ''}
-                          onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
+                          value={editingItem.image_url || ''}
+                          onChange={(e) => setEditingItem({ ...editingItem, image_url: e.target.value })}
                           className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                          required
-                        />
-                      </section>
-                      <section>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Description *
-                        </label>
-                        <textarea
-                          value={editingItem.description || ''}
-                          onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
-                          rows={3}
-                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                          required
+                          placeholder="https://example.com/image.jpg"
                         />
                       </section>
 
+                      {activeTab === 'tools' && (
+                        <section>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Image Alt Text
+                          </label>
+                          <input
+                            type="text"
+                            value={editingItem.image_alt || ''}
+                            onChange={(e) => setEditingItem({ ...editingItem, image_alt: e.target.value })}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="Descriptive alt text for the image"
+                          />
+                        </section>
+                      )}
+
+                      {activeTab === 'categories' && (
+                        <section>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Icon
+                          </label>
+                          <input
+                            type="text"
+                            value={editingItem.icon || ''}
+                            onChange={(e) => setEditingItem({ ...editingItem, icon: e.target.value })}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="Lucide icon name (e.g., 'sparkles') or icon URL"
+                          />
+                        </section>
+                      )}
+
+                      {(activeTab === 'tools' || activeTab === 'categories') && (
+                        <section>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Slug
+                          </label>
+                          <input
+                            type="text"
+                            value={editingItem.slug || ''}
+                            onChange={(e) => setEditingItem({ ...editingItem, slug: e.target.value })}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="url-friendly-slug"
+                          />
+                        </section>
+                      )}
+
+                      {(activeTab === 'tools' || activeTab === 'blog_posts') && (
+                        <section>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Published At
+                          </label>
+                          <input
+                            type="datetime-local"
+                            value={editingItem.published_at ? new Date(editingItem.published_at).toISOString().slice(0, 16) : ''}
+                            onChange={(e) => setEditingItem({ ...editingItem, published_at: e.target.value ? new Date(e.target.value).toISOString() : null })}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                          />
+                        </section>
+                      )}
+
+                      {activeTab === 'tools' && (
+                        <section className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              Rating (1-5)
+                            </label>
+                            <input
+                              type="number"
+                              min="1"
+                              max="5"
+                              step="0.1"
+                              value={editingItem.rating || ''}
+                              onChange={(e) => setEditingItem({ ...editingItem, rating: parseFloat(e.target.value) || null })}
+                              className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            />
+                          </div>
+                          <div className="flex items-end">
+                            <label className="flex items-center space-x-2">
+                              <input
+                                type="checkbox"
+                                checked={editingItem.featured || false}
+                                onChange={(e) => setEditingItem({ ...editingItem, featured: e.target.checked })}
+                                className="rounded"
+                              />
+                              <span className="text-gray-300">Featured Tool</span>
+                            </label>
+                          </div>
+                        </section>
+                      )}
+                    </section>
+                  </fieldset>
+
+                  {/* How to Use Section (Tools Only) */}
+                  {activeTab === 'tools' && (
+                    <fieldset className="border-t border-royal-dark-lighter pt-6">
+                      <h3 className="text-lg font-semibold mb-4">How to Use This Tool</h3>
+                      <section>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Usage Instructions
+                        </label>
+                        <textarea
+                          value={editingItem.how_to_use || ''}
+                          onChange={(e) => setEditingItem({ ...editingItem, how_to_use: e.target.value })}
+                          rows={6}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                          placeholder="Provide step-by-step instructions on how to use this tool..."
+                        />
+                      </section>
+                    </fieldset>
+                  )}
+
+                  {/* Content Type Selection */}
+                  {activeTab !== 'blog_posts' && (
+                    <fieldset className="border-t border-royal-dark-lighter pt-6">
                       {/* Content Type Selection */}
                       <fieldset>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -498,19 +768,8 @@ const Admin: React.FC = () => {
                           </label>
                         </div>
                       </fieldset>
-
-                      <section>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Image URL
-                        </label>
-                        <input
-                          type="text"
-                          value={editingItem.image_url || ''}
-                          onChange={(e) => setEditingItem({ ...editingItem, image_url: e.target.value })}
-                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                          placeholder="https://example.com/image.jpg"
-                        />
-                      </section>
+                    </fieldset>
+                  )}
 
                       {/* Tool-specific fields */}
                       {activeTab === 'tools' && (
