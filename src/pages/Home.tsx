@@ -95,30 +95,23 @@ function Home() {
         setError(null);
         console.log('🚀 Fetching REAL data from Supabase...');
         
-        // Fetch ALL categories (20+) and tools in parallel
-        const [categoriesResult, toolsResult, agentsResult] = await Promise.all([
+        // Fetch your real categories (20+) and tools (140+) in parallel
+        const [categoriesResult, toolsResult] = await Promise.all([
           supabase
             .from('categories')
             .select('*')
             .order('name')
-            .limit(50), // Get up to 50 categories
+            .limit(30), // Get up to 30 categories (you have 20+)
           
           supabase
             .from('tools')
             .select('*')
             .order('created_at', { ascending: false })
-            .limit(1000), // Get more tools for better distribution
-          
-          supabase
-            .from('agents')
-            .select('*')
-            .eq('status', 'active')
-            .limit(10)
+            .limit(200) // Get up to 200 tools (you have 140+)
         ]);
 
         console.log('📊 Categories fetched:', categoriesResult.data?.length);
         console.log('🔧 Tools fetched:', toolsResult.data?.length);
-        console.log('🤖 Agents fetched:', agentsResult.data?.length);
 
         if (categoriesResult.data && toolsResult.data) {
           // Group tools by category
@@ -140,6 +133,7 @@ function Home() {
             .slice(0, 30); // Show top 30 categories
 
           console.log('✅ Processed categories:', processedCategories.length);
+          console.log('📋 Categories with tools:', processedCategories.map(c => `${c.name}: ${c.tool_count} tools`));
           setCategoriesWithTools(processedCategories);
           
           // Set filtered tools for featured section
@@ -152,7 +146,7 @@ function Home() {
           // Cache the real data
           dataCache.set(cacheKey, {
             categories: processedCategories,
-            agents: agentsResult.data || [],
+            agents: [], // No agents yet
             filteredTools: newTools,
             timestamp: Date.now()
           });
@@ -160,9 +154,8 @@ function Home() {
           console.log('💾 Data cached successfully');
         }
 
-        if (agentsResult.data) {
-          setAgents(agentsResult.data);
-        }
+        // Set empty agents array since you don't have agents yet
+        setAgents([]);
 
       } catch (error) {
         console.error('❌ Failed to fetch real data:', error);
