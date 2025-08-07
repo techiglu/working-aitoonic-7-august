@@ -251,6 +251,10 @@ function AgentDetail() {
                   </ul>
                 </section>
               )}
+            </article>
+          </section>
+        </article>
+      </main>
     </>
   );
 }
