@@ -266,6 +266,10 @@ function ToolDetail() {
                   </ul>
                 </section>
               )}
+            </article>
+          </section>
+        </article>
+      </main>
     </>
   );
 }
