@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
-import { prerender } from 'vite-plugin-prerender';
+import prerender from 'vite-plugin-prerender';
 import { generatePrerenderRoutes } from './scripts/generate-prerender-routes.js';
 
 export default defineConfig(async ({ command }) => {
