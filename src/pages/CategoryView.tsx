@@ -158,6 +158,8 @@ function CategoryView() {
               </button>
             </footer>
           )}
+        </article>
+      </main>
     </>
   );
 }
