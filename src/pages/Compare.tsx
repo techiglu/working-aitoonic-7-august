@@ -322,6 +322,8 @@ function Compare() {
               </ul>
             </section>
           )}
+        </article>
+      </main>
     </>
   );
 }
