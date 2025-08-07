@@ -191,6 +191,8 @@ function Search() {
               ))}
             </section>
           )}
+        </article>
+      </main>
     </>
   );
 }
