@@ -477,9 +477,8 @@ function Home() {
                     className="bg-royal-dark-card rounded-xl overflow-hidden group hover:scale-105 transition-all duration-300 border border-royal-dark-lighter hover:border-royal-gold"
                   >
                     <div className="aspect-square relative overflow-hidden">
-                      <img
+                      <OptimizedImage
                         src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
-                        alt={tool.name}
                         className="w-full h-full object-cover"
                         loading="lazy"
                       />
