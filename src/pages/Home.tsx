@@ -74,98 +74,116 @@ function Home() {
   // Fetch REAL data from Supabase
   useEffect(() => {
     async function fetchData() {
-      const cacheKey = 'real-homepage-data';
-      const cached = dataCache.get(cacheKey);
-      
-      if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-        console.log('📦 Using cached data');
-        setCategoriesWithTools(cached.categories);
-        setAgents(cached.agents);
-        setFilteredTools(cached.filteredTools);
-        return;
-      }
-
-      if (!supabase) {
-        setError('Supabase not configured');
-        return;
-      }
-
       try {
         setLoading(true);
         setError(null);
-        console.log('🚀 Fetching REAL data from Supabase...');
+        console.log('🚀 Fetching data from Supabase...');
+        console.log('📡 Supabase URL:', supabase.supabaseUrl);
         
-        // Fetch your real categories (20+) and tools (140+) in parallel
+        // Test connection first
+        const { data: testData, error: testError } = await supabase
+          .from('categories')
+          .select('count')
+          .limit(1);
+        
+        if (testError) {
+          console.error('❌ Supabase connection failed:', testError);
+          setError(`Connection failed: ${testError.message}`);
+          return;
+        }
+        
+        console.log('✅ Supabase connection successful');
+        
+        // Fetch categories and tools
         const [categoriesResult, toolsResult] = await Promise.all([
           supabase
             .from('categories')
             .select('*')
             .order('name')
-            .limit(30), // Get up to 30 categories (you have 20+)
+            .limit(30),
           
           supabase
             .from('tools')
             .select('*')
             .order('created_at', { ascending: false })
-            .limit(200) // Get up to 200 tools (you have 140+)
+            .limit(200)
         ]);
 
-        console.log('📊 Categories fetched:', categoriesResult.data?.length);
-        console.log('🔧 Tools fetched:', toolsResult.data?.length);
-
-        if (categoriesResult.data && toolsResult.data) {
-          // Group tools by category
-          const toolsByCategory = toolsResult.data.reduce((acc: Record<string, Tool[]>, tool: Tool) => {
-            if (!acc[tool.category_id]) acc[tool.category_id] = [];
-            acc[tool.category_id].push(tool);
-            return acc;
-          }, {});
-          
-          // Process categories with their tools, ordered by tool count
-          const processedCategories = categoriesResult.data
-            .map((category: Category) => ({
-              ...category,
-              tool_count: toolsByCategory[category.id]?.length || 0,
-              tools: (toolsByCategory[category.id] || []).slice(0, 12)
-            }))
-            .filter((category: CategoryWithTools) => category.tool_count > 0)
-            .sort((a: CategoryWithTools, b: CategoryWithTools) => b.tool_count - a.tool_count)
-            .slice(0, 30); // Show top 30 categories
-
-          console.log('✅ Processed categories:', processedCategories.length);
-          console.log('📋 Categories with tools:', processedCategories.map(c => `${c.name}: ${c.tool_count} tools`));
-          setCategoriesWithTools(processedCategories);
-          
-          // Set filtered tools for featured section
-          const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-          const newTools = toolsResult.data
-            .filter((tool: Tool) => new Date(tool.created_at) >= weekAgo)
-            .slice(0, 8);
-          setFilteredTools(newTools);
-
-          // Cache the real data
-          dataCache.set(cacheKey, {
-            categories: processedCategories,
-            agents: [], // No agents yet
-            filteredTools: newTools,
-            timestamp: Date.now()
-          });
-
-          console.log('💾 Data cached successfully');
+        console.log('📊 Categories result:', categoriesResult);
+        console.log('🔧 Tools result:', toolsResult);
+        
+        if (categoriesResult.error) {
+          console.error('❌ Categories fetch error:', categoriesResult.error);
+          setError(`Categories error: ${categoriesResult.error.message}`);
+          return;
         }
+        
+        if (toolsResult.error) {
+          console.error('❌ Tools fetch error:', toolsResult.error);
+          setError(`Tools error: ${toolsResult.error.message}`);
+          return;
+        }
+        
+        const categories = categoriesResult.data || [];
+        const tools = toolsResult.data || [];
+        
+        console.log('📊 Categories fetched:', categories.length);
+        console.log('🔧 Tools fetched:', tools.length);
+        
+        if (categories.length === 0) {
+          setError('No categories found in database');
+          return;
+        }
+        
+        if (tools.length === 0) {
+          setError('No tools found in database');
+          return;
+        }
+
+        // Group tools by category
+        const toolsByCategory = tools.reduce((acc: Record<string, Tool[]>, tool: Tool) => {
+          if (!acc[tool.category_id]) acc[tool.category_id] = [];
+          acc[tool.category_id].push(tool);
+          return acc;
+        }, {});
+        
+        console.log('🗂️ Tools grouped by category:', Object.keys(toolsByCategory).length, 'categories have tools');
+        
+        // Process categories with their tools, ordered by tool count
+        const processedCategories = categories
+          .map((category: Category) => ({
+            ...category,
+            tool_count: toolsByCategory[category.id]?.length || 0,
+            tools: (toolsByCategory[category.id] || []).slice(0, 12)
+          }))
+          .filter((category: CategoryWithTools) => category.tool_count > 0)
+          .sort((a: CategoryWithTools, b: CategoryWithTools) => b.tool_count - a.tool_count);
+
+        console.log('✅ Processed categories:', processedCategories.length);
+        console.log('📋 Categories with tools:', processedCategories.map(c => `${c.name}: ${c.tool_count} tools`));
+        
+        setCategoriesWithTools(processedCategories);
+        
+        // Set filtered tools for featured section
+        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const newTools = tools
+          .filter((tool: Tool) => new Date(tool.created_at) >= weekAgo)
+          .slice(0, 8);
+        setFilteredTools(newTools);
 
         // Set empty agents array since you don't have agents yet
         setAgents([]);
+        
+        console.log('🎉 Data loading complete!');
 
       } catch (error) {
-        console.error('❌ Failed to fetch real data:', error);
-        setError(`Failed to load data: ${error.message}`);
+        console.error('❌ Failed to fetch data:', error);
+        setError(`Failed to load data: ${error?.message || 'Unknown error'}`);
       } finally {
         setLoading(false);
       }
     }
     
-    // Fetch immediately for real data
     fetchData();
   }, []);
 
@@ -456,6 +474,31 @@ function Home() {
       {/* All Categories with Tools - Ordered by tool count */}
       <section className="py-16 bg-royal-dark">
         <article className="container mx-auto px-4">
+          {/* Debug Information */}
+          {loading && (
+            <div className="text-center mb-8">
+              <div className="text-royal-gold text-xl">🚀 Loading your data...</div>
+            </div>
+          )}
+          
+          {error && (
+            <div className="text-center mb-8">
+              <div className="text-red-400 text-lg">⚠️ {error}</div>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="mt-4 bg-royal-gold text-royal-dark px-6 py-2 rounded-lg font-bold hover:bg-opacity-90"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+          
+          {!loading && !error && categoriesWithTools.length === 0 && (
+            <div className="text-center mb-8">
+              <div className="text-gray-400 text-lg">No categories found</div>
+            </div>
+          )}
+          
           {categoriesWithTools.map((category, categoryIndex) => (
             <section key={category.id} className="mb-20">
               {/* Category Header */}
