@@ -116,26 +116,11 @@ function ToolDetail() {
           description={tool.seo_description || tool.description}  // Set description based on seo_description or tool.description
           image={tool.image_url}
         />
-          
-          {/* Features and Use Cases */}
-          <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-            <div className="lg:col-span-2 space-y-8">
-              {/* Features */}
-              {tool.features && tool.features.length > 0 && (
-                <article className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
-                  <h2 className="text-2xl font-bold mb-6">Key Features</h2>
-                  <ul className="grid md:grid-cols-2 gap-6">
-                    {tool.features.map((feature, index) => (
-                      <li key={index} className="flex items-start space-x-3">
-                        <div>
-                          <h3 className="font-semibold text-white mb-1">{feature.title}</h3>
-                          <p className="text-gray-400">{feature.description}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </article>
-              )}
+      )}
+      
+      <main className="min-h-screen bg-royal-dark py-20">
+        <div className="container mx-auto px-4">
+          <nav className="mb-8">
             <mark className="text-gray-300">{tool.name}</mark>
           </nav>
 
@@ -204,8 +189,7 @@ function ToolDetail() {
                   </aside>
                 )}
               </header>
-            </section>
-          </article>
+              
               <nav className="flex flex-wrap gap-4">
                 {tool.url && (
                   <a
@@ -227,12 +211,12 @@ function ToolDetail() {
                   </Link>
                 )}
               </nav>
-            </article>
-          </section>
+            </section>
+          </article>
 
           {/* Features and Use Cases */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-            <section className="lg:col-span-2 space-y-8">
+          <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+            <div className="lg:col-span-2 space-y-8">
               {/* Features */}
               {tool.features && tool.features.length > 0 && (
                 <article className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
@@ -251,7 +235,6 @@ function ToolDetail() {
               )}
 
               {/* Use Cases */}
-              {/* Use Cases */}
               {tool.useCases && tool.useCases.length > 0 && (
                 <article className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
                   <h2 className="text-2xl font-bold mb-6">Use Cases</h2>
@@ -269,7 +252,7 @@ function ToolDetail() {
               )}
             </div>
           </section>
-        </article>
+        </div>
       </main>
     </>
   );
