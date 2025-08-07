@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import pkg from 'react-helmet-async';
-const { Helmet } = pkg;
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
