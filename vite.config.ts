@@ -60,6 +60,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
   },
   server: {
+    cors: true,
     headers: {
       'Cache-Control': 'public, max-age=31536000'
     },
@@ -68,7 +69,15 @@ export default defineConfig({
     // Optimize dev server
     hmr: {
       overlay: false
-    }
+    },
+    // Add proxy for Supabase if needed
+    proxy: {
+      '/api': {
+        target: 'https://opmsmqtxqrivlyigpudk.supabase.co',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
   },
   // Enable experimental features for better performance
   esbuild: {

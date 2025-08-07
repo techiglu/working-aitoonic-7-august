@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Sparkles, Search, Bot, ArrowRight, Filter, TrendingUp, Calendar, Clock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { testSupabaseConnection } from '../lib/supabase';
 import { Link, useNavigate } from 'react-router-dom';
 import { LazyImage } from '../components/LazyImage';
 
@@ -77,34 +78,30 @@ function Home() {
       try {
         setLoading(true);
         setError(null);
-        console.log('🚀 Fetching data from Supabase...');
-        console.log('📡 Supabase URL:', supabase.supabaseUrl);
+        
+        console.log('🚀 Starting data fetch process...');
         
         // Test connection first
-        const { data: testData, error: testError } = await supabase
-          .from('categories')
-          .select('count')
-          .limit(1);
-        
-        if (testError) {
-          console.error('❌ Supabase connection failed:', testError);
-          setError(`Connection failed: ${testError.message}`);
+        const connectionTest = await testSupabaseConnection();
+        if (!connectionTest.success) {
+          console.error('❌ Connection test failed:', connectionTest.error);
+          setError(`Connection failed: ${connectionTest.error}`);
           return;
         }
         
-        console.log('✅ Supabase connection successful');
+        console.log('✅ Connection verified, fetching data...');
         
-        // Fetch categories and tools
+        // Fetch categories and tools with better error handling
         const [categoriesResult, toolsResult] = await Promise.all([
           supabase
             .from('categories')
-            .select('*')
+            .select('id, name, description, created_at')
             .order('name')
             .limit(30),
           
           supabase
             .from('tools')
-            .select('*')
+            .select('id, name, description, url, category_id, image_url, created_at, features, useCases, pricing')
             .order('created_at', { ascending: false })
             .limit(200)
         ]);
@@ -114,13 +111,13 @@ function Home() {
         
         if (categoriesResult.error) {
           console.error('❌ Categories fetch error:', categoriesResult.error);
-          setError(`Categories error: ${categoriesResult.error.message}`);
+          setError(`Failed to load categories: ${categoriesResult.error.message}`);
           return;
         }
         
         if (toolsResult.error) {
           console.error('❌ Tools fetch error:', toolsResult.error);
-          setError(`Tools error: ${toolsResult.error.message}`);
+          setError(`Failed to load tools: ${toolsResult.error.message}`);
           return;
         }
         
@@ -131,12 +128,14 @@ function Home() {
         console.log('🔧 Tools fetched:', tools.length);
         
         if (categories.length === 0) {
-          setError('No categories found in database');
+          console.warn('⚠️ No categories found');
+          setError('No categories found in your database. Please add some categories first.');
           return;
         }
         
         if (tools.length === 0) {
-          setError('No tools found in database');
+          console.warn('⚠️ No tools found');
+          setError('No tools found in your database. Please add some tools first.');
           return;
         }
 
@@ -178,7 +177,7 @@ function Home() {
 
       } catch (error) {
         console.error('❌ Failed to fetch data:', error);
-        setError(`Failed to load data: ${error?.message || 'Unknown error'}`);
+        setError(`Network error: ${error?.message || 'Unable to connect to database'}`);
       } finally {
         setLoading(false);
       }
