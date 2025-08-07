@@ -161,7 +161,7 @@ function Home() {
               .map((category: Category) => ({
                 ...category,
                 tool_count: toolsByCategory[category.id]?.length || 0,
-                tools: (toolsByCategory[category.id] || []).slice(0, 12)
+                tools: (toolsByCategory[category.id] || []).slice(0, 12) // Exactly 12 tools per category
               }))
               .filter((category: CategoryWithTools) => category.tool_count > 0)
               .sort((a: CategoryWithTools, b: CategoryWithTools) => b.tool_count - a.tool_count);
@@ -498,134 +498,75 @@ function Home() {
         </section>
       )}
 
-      {/* First Category - Above the fold */}
-      {categoriesWithTools.length > 0 && (
-        <section className="py-6 bg-royal-dark">
-          <article className="container mx-auto px-4">
-            <section className="mb-8">
-              <header className="flex items-center justify-between mb-4">
-                <hgroup>
-                  <h3 className="text-2xl font-bold text-white">{categoriesWithTools[0].name}</h3>
-                  <p className="text-royal-gold text-sm font-medium">
-                    {categoriesWithTools[0].tool_count} tools available
-                  </p>
-                </hgroup>
-                <Link
-                  to={`/category/${categoriesWithTools[0].name.toLowerCase().replace(/\s+/g, '-')}`}
-                  className="flex items-center text-royal-gold hover:text-royal-gold/80 font-medium"
-                >
-                  View All
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Link>
-              </header>
-
-              <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {categoriesWithTools[0].tools.map((tool) => (
-                  <li key={tool.id}>
-                    <Link
-                    to={`/ai/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="bg-royal-dark-card rounded-xl overflow-hidden group hover:scale-105 transition-all duration-300 border border-royal-dark-lighter hover:border-royal-gold"
-                  >
-                    <article className="aspect-square relative overflow-hidden">
-                      <LazyImage
-                        src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
-                        alt={tool.name}
-                        width={400}
-                        height={400}
-                        className="w-full h-full object-cover"
-                      />
-                      <aside className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <footer className="absolute bottom-0 left-0 right-0 p-3">
-                        <h4 className="text-sm font-bold text-white group-hover:text-royal-gold transition-colors">
-                          {tool.name}
-                        </h4>
-                        <p className="text-xs text-gray-300 line-clamp-2 mt-1">
-                          {tool.description}
-                        </p>
-                        {tool.pricing && tool.pricing.length > 0 && (
-                          <aside className="mt-2">
-                            <mark className="text-xs bg-royal-gold text-royal-dark px-2 py-1 rounded-full font-medium">
-                              {tool.pricing[0].price}
-                            </mark>
-                          </aside>
-                        )}
-                      </footer>
-                    </article>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          </article>
-        </section>
-      )}
-
-      {/* How to Use Section */}
-      {/* All Categories with Tools */}
-      <section className="py-12 bg-royal-dark-card">
+      {/* All Categories with Tools - Ordered by tool count */}
+      <section className="py-16 bg-royal-dark">
         <article className="container mx-auto px-4">
-          <header className="text-center mb-12">
-            <h2 className="text-3xl font-bold gradient-text mb-4">Browse All Categories</h2>
-            <p className="text-lg text-gray-300 max-w-3xl mx-auto">
-              Explore our comprehensive collection of AI tools organized by category
-            </p>
-          </header>
-
-          {categoriesWithTools.map((category) => (
-            <section key={category.id} className="mb-16">
+          {categoriesWithTools.map((category, categoryIndex) => (
+            <section key={category.id} className="mb-20">
+              {/* Category Header */}
               <header className="flex items-center justify-between mb-8">
                 <hgroup>
                   <Link
                     to={`/category/${category.name.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="text-2xl font-bold text-white hover:text-royal-gold transition-colors"
+                    className="text-3xl font-bold text-white hover:text-royal-gold transition-colors"
                   >
                     {category.name}
                   </Link>
-                  <p className="text-royal-gold text-sm font-medium mt-1">
+                  <p className="text-gray-400 mt-2">
+                    This category of {category.name} includes tools that help you with various tasks. 
+                    You get AI-powered features and capabilities to enhance your workflow.
+                  </p>
+                  <p className="text-royal-gold text-sm font-medium mt-2">
                     {category.tool_count} tools available
                   </p>
                 </hgroup>
                 <Link
                   to={`/category/${category.name.toLowerCase().replace(/\s+/g, '-')}`}
-                  className="flex items-center text-royal-gold hover:text-royal-gold/80 font-medium"
+                  className="flex items-center text-royal-gold hover:text-royal-gold/80 font-medium bg-royal-dark-card px-4 py-2 rounded-lg border border-royal-dark-lighter hover:border-royal-gold transition-all"
                 >
                   View All
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
               </header>
 
-              <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {category.tools.slice(0, 12).map((tool, index) => (
+              {/* Tools Grid - Exactly 12 tools in 4x3 grid */}
+              <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                {category.tools.slice(0, 12).map((tool, toolIndex) => (
                   <li key={tool.id}>
                     <Link
                       to={`/ai/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="bg-royal-dark rounded-xl overflow-hidden group hover:scale-105 transition-all duration-300 border border-royal-dark-lighter hover:border-royal-gold"
+                      className="block bg-royal-dark-card rounded-xl overflow-hidden group hover:scale-105 transition-all duration-300 border border-royal-dark-lighter hover:border-royal-gold"
                     >
-                      <article className="aspect-square relative overflow-hidden">
-                        <LazyImage
-                          src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
-                          alt={tool.name}
-                          width={400}
-                          height={400}
-                          priority={index < 4}
-                          className="w-full h-full object-cover"
-                        />
-                        <aside className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                        <footer className="absolute bottom-0 left-0 right-0 p-3">
-                          <h3 className="text-sm font-bold text-white group-hover:text-royal-gold transition-colors">
-                            {tool.name}
-                          </h3>
-                          <p className="text-xs text-gray-300 line-clamp-2 mt-1">
-                            {tool.description}
-                          </p>
-                          {tool.pricing && tool.pricing.length > 0 && (
-                            <aside className="mt-2">
-                              <mark className="text-xs bg-royal-gold text-royal-dark px-2 py-1 rounded-full font-medium">
+                      <article>
+                        {/* Tool Image */}
+                        <figure className="aspect-square relative overflow-hidden">
+                          <LazyImage
+                            src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
+                            alt={tool.name}
+                            width={400}
+                            height={400}
+                            priority={categoryIndex === 0 && toolIndex < 4}
+                            className="w-full h-full object-cover"
+                          />
+                          <aside className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                          
+                          {/* Tool Info Overlay */}
+                          <footer className="absolute bottom-0 left-0 right-0 p-4">
+                            <h3 className="text-base font-bold text-white group-hover:text-royal-gold transition-colors mb-1">
+                              {tool.name}
+                            </h3>
+                            <p className="text-sm text-gray-300 line-clamp-2 mb-2">
+                              {tool.description}
+                            </p>
+                            
+                            {/* Pricing Badge */}
+                            {tool.pricing && tool.pricing.length > 0 && (
+                              <mark className="inline-block text-xs bg-royal-gold text-royal-dark px-2 py-1 rounded-full font-medium">
                                 {tool.pricing[0].price}
                               </mark>
-                            </aside>
-                          )}
-                        </footer>
+                            )}
+                          </footer>
+                        </figure>
                       </article>
                     </Link>
                   </li>
@@ -635,8 +576,6 @@ function Home() {
           ))}
         </article>
       </section>
-
-      {/* Remaining Categories */}
 
       {/* Newsletter Section */}
       <section className="py-16 bg-royal-dark">
