@@ -278,11 +278,11 @@ const Admin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-royal-dark py-12">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
+    <main className="min-h-screen bg-royal-dark py-12">
+      <article className="container mx-auto px-4">
+        <header className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold gradient-text">Admin Dashboard</h1>
-          <div className="flex space-x-4">
+          <nav className="flex space-x-4">
             <button
               onClick={() => setActiveTab('tools')}
               className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${
@@ -310,13 +310,13 @@ const Admin: React.FC = () => {
               <Bot className="w-5 h-5" />
               <span>Agents</span>
             </button>
-          </div>
-        </div>
+          </nav>
+        </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Items List */}
-          <div className="md:col-span-1 bg-royal-dark-card rounded-xl p-6 border border-royal-dark-lighter">
-            <div className="flex items-center justify-between mb-6">
+          <aside className="md:col-span-1 bg-royal-dark-card rounded-xl p-6 border border-royal-dark-lighter">
+            <header className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold">Items</h2>
               <button
                 onClick={() => setEditingItem({ type: activeTab.slice(0, -1) as any })}
@@ -324,10 +324,10 @@ const Admin: React.FC = () => {
               >
                 <Plus className="w-5 h-5" />
               </button>
-            </div>
+            </header>
 
             {/* Search Input */}
-            <div className="relative mb-6">
+            <section className="relative mb-6">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
@@ -336,15 +336,15 @@ const Admin: React.FC = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold text-sm"
               />
-            </div>
+            </section>
 
             {loading ? (
-              <div className="text-center text-gray-400">Loading...</div>
+              <p className="text-center text-gray-400">Loading...</p>
             ) : (
-              <div className="space-y-4 max-h-96 overflow-y-auto">
+              <ul className="space-y-4 max-h-96 overflow-y-auto">
                 {filteredItems.map((item) => (
-                  <button
-                    key={item.id}
+                  <li key={item.id}>
+                    <button
                     onClick={() => setEditingItem(item)}
                     className={`w-full text-left p-4 rounded-lg transition-colors ${
                       editingItem?.id === item.id
@@ -352,24 +352,25 @@ const Admin: React.FC = () => {
                         : 'bg-royal-dark hover:bg-royal-dark-lighter'
                     }`}
                   >
-                    <h3 className="font-medium text-white">{item.name}</h3>
-                    <p className="text-sm text-gray-400 line-clamp-2">{item.description}</p>
-                  </button>
+                      <h3 className="font-medium text-white">{item.name}</h3>
+                      <p className="text-sm text-gray-400 line-clamp-2">{item.description}</p>
+                    </button>
+                  </li>
                 ))}
                 {filteredItems.length === 0 && (
-                  <div className="text-center text-gray-400 py-8">
+                  <p className="text-center text-gray-400 py-8">
                     {searchTerm ? 'No items found matching your search' : 'No items found'}
-                  </div>
+                  </p>
                 )}
-              </div>
+              </ul>
             )}
-          </div>
+          </aside>
 
           {/* Edit Form */}
-          <div className="md:col-span-2">
+          <section className="md:col-span-2">
             {editingItem && (
-              <div className="bg-royal-dark-card rounded-xl p-6 border border-royal-dark-lighter">
-                <div className="flex items-center justify-between mb-6">
+              <article className="bg-royal-dark-card rounded-xl p-6 border border-royal-dark-lighter">
+                <header className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold">
                     {editingItem.id ? 'Edit Item' : 'New Item'}
                   </h2>
@@ -381,13 +382,13 @@ const Admin: React.FC = () => {
                     <Save className="w-5 h-5" />
                     <span>{saving ? 'Saving...' : 'Save & Publish'}</span>
                   </button>
-                </div>
+                </header>
 
                 {/* How to Use Section */}
-                <div className="bg-royal-dark-card rounded-xl p-6 border border-royal-dark-lighter mb-6">
+                <section className="bg-royal-dark-card rounded-xl p-6 border border-royal-dark-lighter mb-6">
                   <h3 className="text-lg font-semibold mb-4">How to Use Admin Panel</h3>
-                  <div className="space-y-4 text-sm text-gray-300">
-                    <div>
+                  <article className="space-y-4 text-sm text-gray-300">
+                    <section>
                       <h4 className="font-medium text-white mb-2">Quick Start Guide:</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-400">
                         <li>Click the "+" button to add new tools, categories, or agents</li>
@@ -396,8 +397,8 @@ const Admin: React.FC = () => {
                         <li>Use high-quality images (1200x630px recommended)</li>
                         <li>Save and publish your content</li>
                       </ul>
-                    </div>
-                    <div>
+                    </section>
+                    <section>
                       <h4 className="font-medium text-white mb-2">Adding New Items:</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-400">
                         <li>Click the "+" button next to "Items" to create new tools, categories, or agents</li>
@@ -405,8 +406,8 @@ const Admin: React.FC = () => {
                         <li>Add SEO title and description for better search rankings</li>
                         <li>Use high-quality images (preferably 1200x630px for tools)</li>
                       </ul>
-                    </div>
-                    <div>
+                    </section>
+                    <section>
                       <h4 className="font-medium text-white mb-2">Managing Content:</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-400">
                         <li>Use the search bar to quickly find specific items</li>
@@ -414,8 +415,8 @@ const Admin: React.FC = () => {
                         <li>For tools: Add features, use cases, and pricing information</li>
                         <li>For agents: Configure capabilities and availability settings</li>
                       </ul>
-                    </div>
-                    <div>
+                    </section>
+                    <section>
                       <h4 className="font-medium text-white mb-2">Best Practices:</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-400">
                         <li>Keep descriptions concise but informative (150-200 characters)</li>
@@ -423,8 +424,8 @@ const Admin: React.FC = () => {
                         <li>Add pricing information to help users make decisions</li>
                         <li>Regularly update tool information to keep it current</li>
                       </ul>
-                    </div>
-                    <div>
+                    </section>
+                    <section>
                       <h4 className="font-medium text-white mb-2">Content Guidelines:</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-400">
                         <li>Write clear, descriptive titles and descriptions</li>
@@ -433,16 +434,16 @@ const Admin: React.FC = () => {
                         <li>Use proper categorization for better discoverability</li>
                         <li>Ensure all links are working and up-to-date</li>
                       </ul>
-                    </div>
-                  </div>
-                </div>
+                    </section>
+                  </article>
+                </section>
 
-                <div className="space-y-6 max-h-[70vh] overflow-y-auto">
+                <form className="space-y-6 max-h-[70vh] overflow-y-auto">
                   {/* Basic Info */}
-                  <div>
+                  <fieldset>
                     <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
-                    <div className="space-y-4">
-                      <div>
+                    <section className="space-y-4">
+                      <section>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           Name *
                         </label>
@@ -453,8 +454,8 @@ const Admin: React.FC = () => {
                           className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                           required
                         />
-                      </div>
-                      <div>
+                      </section>
+                      <section>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           Description *
                         </label>
@@ -465,14 +466,14 @@ const Admin: React.FC = () => {
                           className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                           required
                         />
-                      </div>
+                      </section>
 
                       {/* Content Type Selection */}
-                      <div>
+                      <fieldset>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           Content Type
                         </label>
-                        <div className="flex items-center space-x-6">
+                        <section className="flex items-center space-x-6">
                           <label className="flex items-center space-x-2">
                             <input
                               type="radio"
@@ -495,10 +496,10 @@ const Admin: React.FC = () => {
                             />
                             <span className="text-gray-300">AI Generated</span>
                           </label>
-                        </div>
-                      </div>
+                        </section>
+                      </fieldset>
 
-                      <div>
+                      <section>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           Image URL
                         </label>
@@ -509,12 +510,12 @@ const Admin: React.FC = () => {
                           className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                           placeholder="https://example.com/image.jpg"
                         />
-                      </div>
+                      </section>
 
                       {/* Tool-specific fields */}
                       {activeTab === 'tools' && (
                         <>
-                          <div>
+                          <section>
                             <label className="block text-sm font-medium text-gray-300 mb-2">
                               Tool URL *
                             </label>
@@ -526,8 +527,8 @@ const Admin: React.FC = () => {
                               placeholder="https://example.com"
                               required
                             />
-                          </div>
-                          <div>
+                          </section>
+                          <section>
                             <label className="block text-sm font-medium text-gray-300 mb-2">
                               Category *
                             </label>
@@ -544,14 +545,14 @@ const Admin: React.FC = () => {
                                 </option>
                               ))}
                             </select>
-                          </div>
+                          </section>
                         </>
                       )}
 
                       {/* Agent-specific fields */}
                       {activeTab === 'agents' && (
                         <>
-                          <div>
+                          <section>
                             <label className="block text-sm font-medium text-gray-300 mb-2">
                               API Endpoint
                             </label>
@@ -562,8 +563,8 @@ const Admin: React.FC = () => {
                               className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                               placeholder="https://api.example.com"
                             />
-                          </div>
-                          <div>
+                          </section>
+                          <section>
                             <label className="block text-sm font-medium text-gray-300 mb-2">
                               Pricing Type
                             </label>
@@ -576,8 +577,8 @@ const Admin: React.FC = () => {
                               <option value="freemium">Freemium</option>
                               <option value="paid">Paid</option>
                             </select>
-                          </div>
-                          <div>
+                          </section>
+                          <section>
                             <label className="block text-sm font-medium text-gray-300 mb-2">
                               Status
                             </label>
@@ -589,8 +590,8 @@ const Admin: React.FC = () => {
                               <option value="active">Active</option>
                               <option value="inactive">Inactive</option>
                             </select>
-                          </div>
-                          <div>
+                          </section>
+                          <section>
                             <label className="block text-sm font-medium text-gray-300 mb-2">
                               User Count
                             </label>
@@ -600,8 +601,8 @@ const Admin: React.FC = () => {
                               onChange={(e) => setEditingItem({ ...editingItem, user_count: parseInt(e.target.value) || 0 })}
                               className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                             />
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
+                          </section>
+                          <fieldset className="grid grid-cols-2 gap-4">
                             <label className="flex items-center space-x-2">
                               <input
                                 type="checkbox"
@@ -629,20 +630,20 @@ const Admin: React.FC = () => {
                               />
                               <span className="text-gray-300">Secure</span>
                             </label>
-                          </div>
+                          </fieldset>
                         </>
                       )}
-                    </div>
-                  </div>
+                    </section>
+                  </fieldset>
 
                   {/* SEO Settings */}
-                  <div className="border-t border-royal-dark-lighter pt-6">
+                  <fieldset className="border-t border-royal-dark-lighter pt-6">
                     <h3 className="text-lg font-semibold mb-4">SEO Settings</h3>
-                    <div className="space-y-4">
-                      <div>
+                    <section className="space-y-4">
+                      <section>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           SEO Title
-                          <span className="text-xs text-gray-400 ml-2">(60 characters max)</span>
+                          <mark className="text-xs text-gray-400 ml-2">(60 characters max)</mark>
                         </label>
                         <input
                           type="text"
@@ -654,15 +655,15 @@ const Admin: React.FC = () => {
                           className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                           placeholder="Enter SEO title"
                         />
-                        <div className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-gray-400 mt-1">
                           {(editingItem.seo_title?.length || 0)}/60 characters
-                        </div>
-                      </div>
+                        </p>
+                      </section>
 
-                      <div>
+                      <section>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           SEO Description
-                          <span className="text-xs text-gray-400 ml-2">(160 characters max)</span>
+                          <mark className="text-xs text-gray-400 ml-2">(160 characters max)</mark>
                         </label>
                         <textarea
                           value={editingItem.seo_description || ''}
@@ -674,17 +675,17 @@ const Admin: React.FC = () => {
                           className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                           placeholder="Enter SEO description"
                         />
-                        <div className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-gray-400 mt-1">
                           {(editingItem.seo_description?.length || 0)}/160 characters
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                        </p>
+                      </section>
+                    </section>
+                  </fieldset>
 
                   {/* Capabilities (for agents) */}
                   {activeTab === 'agents' && (
-                    <div className="border-t border-royal-dark-lighter pt-6">
-                      <div className="flex items-center justify-between mb-4">
+                    <fieldset className="border-t border-royal-dark-lighter pt-6">
+                      <header className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold">Capabilities</h3>
                         <button
                           onClick={addCapability}
@@ -692,10 +693,10 @@ const Admin: React.FC = () => {
                         >
                           <Plus className="w-5 h-5" />
                         </button>
-                      </div>
-                      <div className="space-y-4">
+                      </header>
+                      <section className="space-y-4">
                         {editingItem.capabilities?.map((capability, index) => (
-                          <div key={index} className="flex items-center space-x-2">
+                          <section key={index} className="flex items-center space-x-2">
                             <input
                               type="text"
                               value={capability}
@@ -709,16 +710,16 @@ const Admin: React.FC = () => {
                             >
                               <X className="w-5 h-5" />
                             </button>
-                          </div>
+                          </section>
                         ))}
-                      </div>
-                    </div>
+                      </section>
+                    </fieldset>
                   )}
 
                   {/* Features (for tools) */}
                   {activeTab === 'tools' && (
-                    <div className="border-t border-royal-dark-lighter pt-6">
-                      <div className="flex items-center justify-between mb-4">
+                    <fieldset className="border-t border-royal-dark-lighter pt-6">
+                      <header className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold">Features</h3>
                         <button
                           onClick={addFeature}
@@ -726,11 +727,11 @@ const Admin: React.FC = () => {
                         >
                           <Plus className="w-5 h-5" />
                         </button>
-                      </div>
-                      <div className="space-y-4">
+                      </header>
+                      <section className="space-y-4">
                         {editingItem.features?.map((feature, index) => (
-                          <div key={index} className="bg-royal-dark p-4 rounded-lg">
-                            <div className="flex justify-between items-start mb-2">
+                          <article key={index} className="bg-royal-dark p-4 rounded-lg">
+                            <header className="flex justify-between items-start mb-2">
                               <input
                                 type="text"
                                 value={feature.title}
@@ -744,7 +745,7 @@ const Admin: React.FC = () => {
                               >
                                 <X className="w-5 h-5" />
                               </button>
-                            </div>
+                            </header>
                             <textarea
                               value={feature.description}
                               onChange={(e) => updateFeature(index, 'description', e.target.value)}
@@ -752,16 +753,16 @@ const Admin: React.FC = () => {
                               rows={2}
                               className="w-full px-4 py-2 bg-royal-dark-lighter border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                             />
-                          </div>
+                          </article>
                         ))}
-                      </div>
-                    </div>
+                      </section>
+                    </fieldset>
                   )}
 
                   {/* Use Cases (for tools) */}
                   {activeTab === 'tools' && (
-                    <div className="border-t border-royal-dark-lighter pt-6">
-                      <div className="flex items-center justify-between mb-4">
+                    <fieldset className="border-t border-royal-dark-lighter pt-6">
+                      <header className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold">Use Cases</h3>
                         <button
                           onClick={addUseCase}
@@ -769,11 +770,11 @@ const Admin: React.FC = () => {
                         >
                           <Plus className="w-5 h-5" />
                         </button>
-                      </div>
-                      <div className="space-y-4">
+                      </header>
+                      <section className="space-y-4">
                         {editingItem.useCases?.map((useCase, index) => (
-                          <div key={index} className="bg-royal-dark p-4 rounded-lg">
-                            <div className="flex justify-between items-start mb-2">
+                          <article key={index} className="bg-royal-dark p-4 rounded-lg">
+                            <header className="flex justify-between items-start mb-2">
                               <input
                                 type="text"
                                 value={useCase.title}
@@ -787,7 +788,7 @@ const Admin: React.FC = () => {
                               >
                                 <X className="w-5 h-5" />
                               </button>
-                            </div>
+                            </header>
                             <textarea
                               value={useCase.description}
                               onChange={(e) => updateUseCase(index, 'description', e.target.value)}
@@ -795,16 +796,16 @@ const Admin: React.FC = () => {
                               rows={2}
                               className="w-full px-4 py-2 bg-royal-dark-lighter border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                             />
-                          </div>
+                          </article>
                         ))}
-                      </div>
-                    </div>
+                      </section>
+                    </fieldset>
                   )}
 
                   {/* Pricing (for tools) */}
                   {activeTab === 'tools' && (
-                    <div className="border-t border-royal-dark-lighter pt-6">
-                      <div className="flex items-center justify-between mb-4">
+                    <fieldset className="border-t border-royal-dark-lighter pt-6">
+                      <header className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold">Pricing Plans</h3>
                         <button
                           onClick={addPricingPlan}
@@ -812,12 +813,12 @@ const Admin: React.FC = () => {
                         >
                           <Plus className="w-5 h-5" />
                         </button>
-                      </div>
-                      <div className="space-y-4">
+                      </header>
+                      <section className="space-y-4">
                         {editingItem.pricing?.map((plan, index) => (
-                          <div key={index} className="bg-royal-dark p-4 rounded-lg">
-                            <div className="flex justify-between items-start mb-4">
-                              <div className="flex-1 grid grid-cols-2 gap-4">
+                          <article key={index} className="bg-royal-dark p-4 rounded-lg">
+                            <header className="flex justify-between items-start mb-4">
+                              <section className="flex-1 grid grid-cols-2 gap-4">
                                 <input
                                   type="text"
                                   value={plan.plan}
@@ -832,14 +833,14 @@ const Admin: React.FC = () => {
                                   placeholder="Price"
                                   className="px-4 py-2 bg-royal-dark-lighter border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                                 />
-                              </div>
+                              </section>
                               <button
                                 onClick={() => removePricingPlan(index)}
                                 className="ml-4 text-gray-400 hover:text-red-500"
                               >
                                 <X className="w-5 h-5" />
                               </button>
-                            </div>
+                            </header>
                             <textarea
                               value={plan.features.join('\n')}
                               onChange={(e) => updatePricingPlan(index, 'features', e.target.value.split('\n').filter(f => f.trim()))}
@@ -847,18 +848,14 @@ const Admin: React.FC = () => {
                               rows={3}
                               className="w-full px-4 py-2 bg-royal-dark-lighter border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                             />
-                          </div>
+                          </article>
                         ))}
-                      </div>
-                    </div>
+                      </section>
+                    </fieldset>
                   )}
-                </div>
-              </div>
+                </form>
+              </article>
             )}
-          </div>
-        </div>
-      </div>
-    </div>
   );
 };
 

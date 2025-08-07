@@ -147,29 +147,31 @@ function Compare() {
         description={`Compare ${tool1.name} and ${tool2.name}. See features, pricing, and find out which tool is best for your needs.`}
       />
 
-      <div className="min-h-screen bg-royal-dark py-20">
-        <div className="container mx-auto px-4">
+      <main className="min-h-screen bg-royal-dark py-20">
+        <article className="container mx-auto px-4">
           {/* Breadcrumbs */}
-          <div className="flex items-center space-x-2 text-sm mb-8 overflow-x-auto whitespace-nowrap pb-2">
+          <nav className="flex items-center space-x-2 text-sm mb-8 overflow-x-auto whitespace-nowrap pb-2">
             <Link to="/" className="text-gray-400 hover:text-white">Home</Link>
             <ChevronRight className="w-4 h-4 text-gray-600 flex-shrink-0" />
             <Link to="/categories" className="text-gray-400 hover:text-white">Tools</Link>
             <ChevronRight className="w-4 h-4 text-gray-600 flex-shrink-0" />
-            <span className="text-gray-300">Compare</span>
-          </div>
+            <mark className="text-gray-300">Compare</mark>
+          </nav>
 
+          <header>
           <h1 className="text-4xl font-bold mb-6 gradient-text text-center">
             {tool1.name} vs {tool2.name}
           </h1>
+          </header>
 
           {/* Tool Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             {[tool1, tool2].map((tool) => (
-              <div
+              <article
                 key={tool.id}
                 className="bg-royal-dark-card rounded-xl overflow-hidden border border-royal-dark-lighter"
               >
-                <div className="aspect-video relative">
+                <figure className="aspect-video relative">
                   <LazyImage
                     src={tool.image_url}
                     alt={tool.name}
@@ -178,9 +180,9 @@ function Compare() {
                     priority={true}
                     className="w-full h-full object-cover"
                   />
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center space-x-4 mb-4">
+                </figure>
+                <section className="p-6">
+                  <header className="flex items-center space-x-4 mb-4">
                     {tool.favicon_url && (
                       <img
                         src={tool.favicon_url}
@@ -188,32 +190,34 @@ function Compare() {
                         className="w-12 h-12 rounded-lg object-contain bg-white p-2"
                       />
                     )}
-                    <div>
+                    <hgroup>
                       <h2 className="text-2xl font-bold text-white">{tool.name}</h2>
                       {tool.category_name && (
-                        <span className="text-gray-400">{tool.category_name}</span>
+                        <p className="text-gray-400">{tool.category_name}</p>
                       )}
-                    </div>
-                  </div>
+                    </hgroup>
+                  </header>
                   <p className="text-gray-300 mb-6">{tool.description}</p>
-                  <a
-                    href={tool.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center bg-royal-gold text-royal-dark px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all"
-                  >
-                    Visit Website
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </a>
-                </div>
-              </div>
+                  <footer>
+                    <a
+                      href={tool.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center bg-royal-gold text-royal-dark px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all"
+                    >
+                      Visit Website
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </a>
+                  </footer>
+                </section>
+              </article>
             ))}
-          </div>
+          </section>
 
           {/* Feature Comparison */}
-          <div className="bg-royal-dark-card rounded-xl p-8 border border-royal-dark-lighter mb-12">
+          <section className="bg-royal-dark-card rounded-xl p-8 border border-royal-dark-lighter mb-12">
             <h2 className="text-2xl font-bold mb-8">Feature Comparison</h2>
-            <div className="overflow-x-auto">
+            <figure className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-royal-dark-lighter">
@@ -253,26 +257,26 @@ function Compare() {
                     ))}
                 </tbody>
               </table>
-            </div>
-          </div>
+            </figure>
+          </section>
 
           {/* Pricing Comparison */}
-          <div className="bg-royal-dark-card rounded-xl p-8 border border-royal-dark-lighter mb-12">
+          <section className="bg-royal-dark-card rounded-xl p-8 border border-royal-dark-lighter mb-12">
             <h2 className="text-2xl font-bold mb-8">Pricing Comparison</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <article className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {[tool1, tool2].map((tool) => (
-                <div key={`pricing-${tool.id}`}>
+                <section key={`pricing-${tool.id}`}>
                   <h3 className="text-xl font-bold mb-6">{tool.name} Pricing</h3>
-                  <div className="space-y-6">
+                  <ul className="space-y-6">
                     {tool.pricing.map((plan, index) => (
-                      <div
+                      <li
                         key={index}
                         className="bg-royal-dark rounded-lg p-6"
                       >
-                        <div className="flex items-center justify-between mb-4">
+                        <header className="flex items-center justify-between mb-4">
                           <h4 className="text-lg font-bold">{plan.plan}</h4>
-                          <span className="text-royal-gold font-semibold">{plan.price}</span>
-                        </div>
+                          <mark className="text-royal-gold font-semibold">{plan.price}</mark>
+                        </header>
                         <ul className="space-y-2">
                           {plan.features.map((feature, i) => (
                             <li key={i} className="flex items-center text-gray-300">
@@ -281,26 +285,26 @@ function Compare() {
                             </li>
                           ))}
                         </ul>
-                      </div>
+                      </li>
                     ))}
-                  </div>
-                </div>
+                  </ul>
+                </section>
               ))}
-            </div>
-          </div>
+            </article>
+          </section>
 
           {/* Similar Tools */}
           {similarTools.length > 0 && (
-            <div className="bg-royal-dark-card rounded-xl p-8 border border-royal-dark-lighter">
+            <section className="bg-royal-dark-card rounded-xl p-8 border border-royal-dark-lighter">
               <h2 className="text-2xl font-bold mb-8">Similar Tools</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                 {similarTools.map((tool) => (
-                  <Link
-                    key={tool.id}
+                  <li key={tool.id}>
+                    <Link
                     to={`/ai/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
                     className="group"
                   >
-                    <div className="aspect-video rounded-lg overflow-hidden mb-4">
+                    <figure className="aspect-video rounded-lg overflow-hidden mb-4">
                       <LazyImage
                         src={tool.image_url}
                         alt={tool.name}
@@ -308,17 +312,16 @@ function Compare() {
                         height={169}
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
                       />
-                    </div>
+                    </figure>
                     <h3 className="font-semibold text-white group-hover:text-royal-gold transition-colors">
                       {tool.name}
                     </h3>
-                  </Link>
+                    </Link>
+                  </li>
                 ))}
-              </div>
-            </div>
+              </ul>
+            </section>
           )}
-        </div>
-      </div>
     </>
   );
 }

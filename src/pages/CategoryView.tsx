@@ -88,22 +88,22 @@ function CategoryView() {
         />
       )}
 
-      <div className="min-h-screen bg-royal-dark py-20">
-        <div className="container mx-auto px-4">
+      <main className="min-h-screen bg-royal-dark py-20">
+        <article className="container mx-auto px-4">
           {/* Breadcrumbs */}
-          <div className="flex items-center space-x-2 text-sm mb-8">
+          <nav className="flex items-center space-x-2 text-sm mb-8">
             <Link to="/" className="text-gray-400 hover:text-white">Home</Link>
             <ChevronRight className="w-4 h-4 text-gray-600" />
             <Link to="/categories" className="text-gray-400 hover:text-white">Categories</Link>
             {name !== 'all' && (
               <>
                 <ChevronRight className="w-4 h-4 text-gray-600" />
-                <span className="text-gray-300">{category?.name}</span>
+                <mark className="text-gray-300">{category?.name}</mark>
               </>
             )}
-          </div>
+          </nav>
 
-          <div className="mb-12">
+          <header className="mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">
               {name === 'all' ? 'All Tools' : category?.name}
             </h1>
@@ -112,16 +112,15 @@ function CategoryView() {
                 {category.description}
               </p>
             )}
-          </div>
+          </header>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+          <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
             {tools.map((tool) => (
-              <Link
+              <article
                 key={tool.id}
-                to={`/ai/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
                 className="bg-royal-dark-card rounded-xl overflow-hidden group hover:scale-105 transition-all duration-300"
               >
-                <div className="aspect-square relative overflow-hidden">
+                <figure className="aspect-square relative overflow-hidden">
                   <LazyImage
                     src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
                     alt={tool.name}
@@ -129,32 +128,36 @@ function CategoryView() {
                     height={400}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <aside className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <footer className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-lg font-bold text-white group-hover:text-royal-gold transition-colors">
                       {tool.name}
                     </h3>
                     <p className="text-sm text-gray-300 line-clamp-2 mt-1">
                       {tool.description}
                     </p>
-                  </div>
-                </div>
-              </Link>
+                    <Link
+                      to={`/ai/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
+                      className="sr-only"
+                    >
+                      View {tool.name}
+                    </Link>
+                  </footer>
+                </figure>
+              </article>
             ))}
-          </div>
+          </section>
 
           {hasMore && (
-            <div className="text-center mt-12">
+            <footer className="text-center mt-12">
               <button
                 onClick={() => setPage(prev => prev + 1)}
                 className="inline-flex items-center justify-center bg-royal-dark-card text-royal-gold px-8 py-3 rounded-lg font-bold hover:bg-royal-dark-lighter transition-colors"
               >
                 Load More Tools
               </button>
-            </div>
+            </footer>
           )}
-        </div>
-      </div>
     </>
   );
 }

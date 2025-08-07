@@ -293,12 +293,12 @@ function Home() {
   }
 
   return (
-    <>
+    <main>
       {/* Hero Section with Search - Compact */}
-      <section className="royal-gradient py-8 relative overflow-hidden">
+      <header className="royal-gradient py-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1635776062127-d379bfcba9f8?auto=format&fit=crop&q=80')] opacity-10 bg-cover bg-center" />
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-4xl mx-auto text-center">
+        <section className="container mx-auto px-4 relative">
+          <article className="max-w-4xl mx-auto text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 gradient-text">
               Discover 2000+ AI Tools & Agents
             </h1>
@@ -307,9 +307,9 @@ function Home() {
             </p>
             
             {/* Enhanced Search Bar */}
-            <div className="max-w-2xl mx-auto mb-6">
-              <div id="search-container" className="relative" style={{ zIndex: 50 }}>
-                <div className="relative">
+            <section className="max-w-2xl mx-auto mb-6">
+              <nav id="search-container" className="relative" style={{ zIndex: 50 }}>
+                <form className="relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
                     id="search-input"
@@ -323,22 +323,22 @@ function Home() {
                     onFocus={() => setShowResults(true)}
                     className="w-full pl-12 pr-4 py-3 bg-royal-dark-card border border-royal-dark-lighter rounded-full text-white focus:outline-none focus:border-royal-gold text-base shadow-xl"
                   />
-                </div>
+                </form>
 
                 {/* Search Results Dropdown */}
                 {showResults && searchResults.length > 0 && (
-                  <div className="absolute left-0 right-0 mt-2 bg-royal-dark-card border border-royal-dark-lighter rounded-2xl shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto">
+                  <aside className="absolute left-0 right-0 mt-2 bg-royal-dark-card border border-royal-dark-lighter rounded-2xl shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto">
                     {(['tool', 'agent', 'category'] as const).map(type => {
                       const typeResults = searchResults.filter(r => r.type === type);
                       if (typeResults.length === 0) return null;
 
                       return (
-                        <div key={type} className="border-b border-royal-dark-lighter last:border-0">
-                          <div className="px-4 py-2 bg-royal-dark-lighter sticky top-0">
+                        <section key={type} className="border-b border-royal-dark-lighter last:border-0">
+                          <header className="px-4 py-2 bg-royal-dark-lighter sticky top-0">
                             <h3 className="text-sm font-semibold text-gray-400">
                               {type.charAt(0).toUpperCase() + type.slice(1)}s
                             </h3>
-                          </div>
+                          </header>
                           {typeResults.map((result, index) => (
                             <button
                               key={`${result.type}-${index}`}
@@ -348,23 +348,23 @@ function Home() {
                               {result.type === 'tool' && <Search className="w-5 h-5 text-royal-gold" />}
                               {result.type === 'agent' && <Bot className="w-5 h-5 text-royal-gold" />}
                               {result.type === 'category' && <Sparkles className="w-5 h-5 text-royal-gold" />}
-                              <div>
+                              <article>
                                 <h4 className="text-white font-medium">{result.item.name}</h4>
                                 <p className="text-sm text-gray-400 line-clamp-1">
                                   {result.item.description}
                                 </p>
-                              </div>
+                              </article>
                             </button>
                           ))}
-                        </div>
+                        </section>
                       );
                     })}
-                  </div>
+                  </aside>
                 )}
-              </div>
-            </div>
+              </nav>
+            </section>
 
-            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+            <nav className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
               <Link 
                 to="/categories" 
                 className="w-full sm:w-auto bg-royal-gold text-royal-dark px-4 py-2 rounded-full font-bold hover:bg-opacity-90 transition-all transform hover:scale-105 text-center text-sm"
@@ -377,11 +377,11 @@ function Home() {
               >
                 AI Agents
               </Link>
-            </div>
+            </nav>
 
             {/* Filter Section - Above the fold */}
-            <div className="flex items-center justify-center mb-4">
-              <div className="flex items-center space-x-2 bg-royal-dark-card rounded-full p-2 border border-royal-dark-lighter">
+            <section className="flex items-center justify-center mb-4">
+              <nav className="flex items-center space-x-2 bg-royal-dark-card rounded-full p-2 border border-royal-dark-lighter">
                 <Filter className="w-4 h-4 text-gray-400 ml-2" />
                 {(['today', 'new', 'popular'] as const).map((filter) => (
                   <button
@@ -397,25 +397,25 @@ function Home() {
                     <span className="font-medium">{getFilterLabel(filter)}</span>
                   </button>
                 ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+              </nav>
+            </section>
+          </article>
+        </section>
+      </header>
 
       {/* Featured Tools - Above the fold */}
       {filteredTools.length > 0 && (
         <section className="py-6 bg-royal-dark-lighter">
-          <div className="container mx-auto px-4">
+          <article className="container mx-auto px-4">
             <h2 className="text-2xl font-bold gradient-text mb-4 text-center">Featured Tools</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredTools.slice(0, 8).map((tool) => (
-                <Link
-                  key={tool.id}
+                <li key={tool.id}>
+                  <Link
                   to={`/ai/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
                   className="bg-royal-dark-card rounded-xl overflow-hidden group hover:scale-105 transition-all duration-300 border border-royal-dark-lighter hover:border-royal-gold"
                 >
-                  <div className="aspect-square relative overflow-hidden">
+                  <article className="aspect-square relative overflow-hidden">
                     <OptimizedImage
                       src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
                       alt={tool.name}
@@ -423,8 +423,8 @@ function Home() {
                       height={400}
                       priority={index < 4}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <aside className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <footer className="absolute bottom-0 left-0 right-0 p-3">
                       <h3 className="text-sm font-bold text-white group-hover:text-royal-gold transition-colors">
                         {tool.name}
                       </h3>
@@ -432,33 +432,34 @@ function Home() {
                         {tool.description}
                       </p>
                       {tool.pricing && tool.pricing.length > 0 && (
-                        <div className="mt-2">
-                          <span className="text-xs bg-royal-gold text-royal-dark px-2 py-1 rounded-full font-medium">
+                        <aside className="mt-2">
+                          <mark className="text-xs bg-royal-gold text-royal-dark px-2 py-1 rounded-full font-medium">
                             {tool.pricing[0].price}
-                          </span>
-                        </div>
+                          </mark>
+                        </aside>
                       )}
-                    </div>
-                  </div>
-                </Link>
+                    </footer>
+                  </article>
+                  </Link>
+                </li>
               ))}
-            </div>
-          </div>
+            </ul>
+          </article>
         </section>
       )}
 
       {/* First Category - Above the fold */}
       {categoriesWithTools.length > 0 && (
         <section className="py-6 bg-royal-dark">
-          <div className="container mx-auto px-4">
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <div>
+          <article className="container mx-auto px-4">
+            <section className="mb-8">
+              <header className="flex items-center justify-between mb-4">
+                <hgroup>
                   <h3 className="text-2xl font-bold text-white">{categoriesWithTools[0].name}</h3>
-                  <span className="text-royal-gold text-sm font-medium">
+                  <p className="text-royal-gold text-sm font-medium">
                     {categoriesWithTools[0].tool_count} tools available
-                  </span>
-                </div>
+                  </p>
+                </hgroup>
                 <Link
                   to={`/category/${categoriesWithTools[0].name.toLowerCase().replace(/\s+/g, '-')}`}
                   className="flex items-center text-royal-gold hover:text-royal-gold/80 font-medium"
@@ -466,22 +467,22 @@ function Home() {
                   View All
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Link>
-              </div>
+              </header>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {categoriesWithTools[0].tools.map((tool) => (
-                  <Link
-                    key={tool.id}
+                  <li key={tool.id}>
+                    <Link
                     to={`/ai/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
                     className="bg-royal-dark-card rounded-xl overflow-hidden group hover:scale-105 transition-all duration-300 border border-royal-dark-lighter hover:border-royal-gold"
                   >
-                    <div className="aspect-square relative overflow-hidden">
+                    <article className="aspect-square relative overflow-hidden">
                       <OptimizedImage
                         src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-3">
+                      <aside className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <footer className="absolute bottom-0 left-0 right-0 p-3">
                         <h4 className="text-sm font-bold text-white group-hover:text-royal-gold transition-colors">
                           {tool.name}
                         </h4>
@@ -489,65 +490,66 @@ function Home() {
                           {tool.description}
                         </p>
                         {tool.pricing && tool.pricing.length > 0 && (
-                          <div className="mt-2">
-                            <span className="text-xs bg-royal-gold text-royal-dark px-2 py-1 rounded-full font-medium">
+                          <aside className="mt-2">
+                            <mark className="text-xs bg-royal-gold text-royal-dark px-2 py-1 rounded-full font-medium">
                               {tool.pricing[0].price}
-                            </span>
-                          </div>
+                            </mark>
+                          </aside>
                         )}
-                      </div>
-                    </div>
-                  </Link>
+                      </footer>
+                    </article>
+                    </Link>
+                  </li>
                 ))}
-              </div>
-            </div>
-          </div>
+              </ul>
+            </section>
+          </article>
         </section>
       )}
 
       {/* How to Use Section */}
       <section className="py-12 bg-royal-dark-card">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+        <article className="container mx-auto px-4">
+          <header className="text-center mb-12">
             <h2 className="text-3xl font-bold gradient-text mb-4">How to Use Aitoonic</h2>
             <p className="text-lg text-gray-300 max-w-3xl mx-auto">
               Get started with our AI tools directory in just a few simple steps
             </p>
-          </div>
+          </header>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-royal-gold rounded-full flex items-center justify-center mx-auto mb-6">
+          <ol className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <li className="text-center">
+              <figure className="w-16 h-16 bg-royal-gold rounded-full flex items-center justify-center mx-auto mb-6">
                 <Search className="w-8 h-8 text-royal-dark" />
-              </div>
+              </figure>
               <h3 className="text-xl font-bold text-white mb-4">1. Search & Discover</h3>
               <p className="text-gray-400">
                 Use our powerful search to find AI tools by name, category, or functionality. Browse through 2000+ curated tools.
               </p>
-            </div>
+            </li>
 
-            <div className="text-center">
-              <div className="w-16 h-16 bg-royal-gold rounded-full flex items-center justify-center mx-auto mb-6">
+            <li className="text-center">
+              <figure className="w-16 h-16 bg-royal-gold rounded-full flex items-center justify-center mx-auto mb-6">
                 <BookOpen className="w-8 h-8 text-royal-dark" />
-              </div>
+              </figure>
               <h3 className="text-xl font-bold text-white mb-4">2. Compare & Learn</h3>
               <p className="text-gray-400">
                 Read detailed reviews, compare features, pricing, and see what other users are saying about each tool.
               </p>
-            </div>
+            </li>
 
-            <div className="text-center">
-              <div className="w-16 h-16 bg-royal-gold rounded-full flex items-center justify-center mx-auto mb-6">
+            <li className="text-center">
+              <figure className="w-16 h-16 bg-royal-gold rounded-full flex items-center justify-center mx-auto mb-6">
                 <Zap className="w-8 h-8 text-royal-dark" />
-              </div>
+              </figure>
               <h3 className="text-xl font-bold text-white mb-4">3. Try & Implement</h3>
               <p className="text-gray-400">
                 Click through to try the tools directly, access free trials, and integrate the best AI solutions into your workflow.
               </p>
-            </div>
-          </div>
+            </li>
+          </ol>
 
-          <div className="text-center mt-12">
+          <footer className="text-center mt-12">
             <Link
               to="/categories"
               className="inline-flex items-center bg-royal-gold text-royal-dark px-8 py-3 rounded-lg font-bold hover:bg-opacity-90 transition-all"
@@ -555,30 +557,30 @@ function Home() {
               Start Exploring
               <ArrowRight className="w-5 h-5 ml-2" />
             </Link>
-          </div>
-        </div>
+          </footer>
+        </article>
       </section>
 
       {/* Remaining Categories */}
       {categoriesWithTools.length > 1 && (
         <section className="py-8 bg-royal-dark">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
+          <article className="container mx-auto px-4">
+            <header className="text-center mb-12">
               <h2 className="text-3xl font-bold gradient-text mb-4">Browse by Category</h2>
               <p className="text-lg text-gray-300 max-w-3xl mx-auto">
                 Explore our comprehensive collection of AI tools organized by category
               </p>
-            </div>
+            </header>
 
             {categoriesWithTools.slice(1).map((category) => (
-              <div key={category.id} className="mb-12">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
+              <section key={category.id} className="mb-12">
+                <header className="flex items-center justify-between mb-6">
+                  <hgroup>
                     <h3 className="text-2xl font-bold text-white">{category.name}</h3>
-                    <span className="text-royal-gold text-sm font-medium">
+                    <p className="text-royal-gold text-sm font-medium">
                       {category.tool_count} tools available
-                    </span>
-                  </div>
+                    </p>
+                  </hgroup>
                   <Link
                     to={`/category/${category.name.toLowerCase().replace(/\s+/g, '-')}`}
                     className="flex items-center text-royal-gold hover:text-royal-gold/80 font-medium"
@@ -586,16 +588,16 @@ function Home() {
                     View All
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Link>
-                </div>
+                </header>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                   {category.tools.map((tool) => (
-                    <Link
-                      key={tool.id}
+                    <li key={tool.id}>
+                      <Link
                       to={`/ai/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
                       className="bg-royal-dark-card rounded-xl overflow-hidden group hover:scale-105 transition-all duration-300 border border-royal-dark-lighter hover:border-royal-gold"
                     >
-                      <div className="aspect-square relative overflow-hidden">
+                      <article className="aspect-square relative overflow-hidden">
                         <LazyImage
                           src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
                           alt={tool.name}
@@ -604,8 +606,8 @@ function Home() {
                           className="w-full h-full object-cover"
                           className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                        <div className="absolute bottom-0 left-0 right-0 p-3">
+                        <aside className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <footer className="absolute bottom-0 left-0 right-0 p-3">
                           <h4 className="text-sm font-bold text-white group-hover:text-royal-gold transition-colors">
                             {tool.name}
                           </h4>
@@ -613,31 +615,33 @@ function Home() {
                             {tool.description}
                           </p>
                           {tool.pricing && tool.pricing.length > 0 && (
-                            <div className="mt-2">
-                              <span className="text-xs bg-royal-gold text-royal-dark px-2 py-1 rounded-full font-medium">
+                            <aside className="mt-2">
+                              <mark className="text-xs bg-royal-gold text-royal-dark px-2 py-1 rounded-full font-medium">
                                 {tool.pricing[0].price}
-                              </span>
-                            </div>
+                              </mark>
+                            </aside>
                           )}
-                        </div>
-                      </div>
-                    </Link>
+                        </footer>
+                      </article>
+                      </Link>
+                    </li>
                   ))}
-                </div>
-              </div>
+                </ul>
+              </section>
             ))}
-          </div>
+          </article>
         </section>
       )}
 
       {/* Newsletter Section */}
       <section className="py-16 bg-royal-dark">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
+        <article className="container mx-auto px-4">
+          <header className="max-w-2xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-4 gradient-text">Stay Updated</h2>
             <p className="text-gray-400 mb-6">
               Get the latest AI tools and insights delivered to your inbox
             </p>
+          </header>
             <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input
                 type="email"
@@ -651,10 +655,9 @@ function Home() {
                 Subscribe
               </button>
             </form>
-          </div>
-        </div>
+        </article>
       </section>
-    </>
+    </main>
   );
 }
 
