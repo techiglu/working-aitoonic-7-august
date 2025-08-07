@@ -1,6 +1,5 @@
 import React from 'react';
-import pkg from 'react-helmet-async';
-const { Helmet } = pkg;
+import { Helmet } from 'react-helmet-async';
 import { Mail, MessageCircle } from 'lucide-react';
 
 function Contact() {
