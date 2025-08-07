@@ -4,79 +4,9 @@ import { supabase } from '../lib/supabase';
 import { Link, useNavigate } from 'react-router-dom';
 import { LazyImage } from '../components/LazyImage';
 
-// Static fallback data for instant loading
-const STATIC_DATA = {
-  categories: [
-    {
-      id: '1',
-      name: 'Text Generation',
-      description: 'AI tools for generating and manipulating text content including writing assistants, content creators, and copywriting tools.',
-      tool_count: 25,
-      tools: Array.from({ length: 12 }, (_, i) => ({
-        id: `text-${i + 1}`,
-        name: `AI Writer ${i + 1}`,
-        description: 'Advanced AI writing assistant for content creation and copywriting',
-        url: 'https://example.com',
-        category_id: '1',
-        image_url: 'https://images.unsplash.com/photo-1676277791608-ac54783d753b?auto=format&fit=crop&q=80&w=400',
-        created_at: new Date().toISOString(),
-        pricing: [{ plan: 'Free', price: 'Free', features: ['Basic features'] }]
-      }))
-    },
-    {
-      id: '2',
-      name: 'Image Generation',
-      description: 'AI-powered tools for creating, editing, and enhancing images with advanced machine learning algorithms.',
-      tool_count: 20,
-      tools: Array.from({ length: 12 }, (_, i) => ({
-        id: `image-${i + 1}`,
-        name: `AI Image Creator ${i + 1}`,
-        description: 'Create stunning artwork and images with AI-powered generation',
-        url: 'https://example.com',
-        category_id: '2',
-        image_url: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=400',
-        created_at: new Date().toISOString(),
-        pricing: [{ plan: 'Pro', price: '$19/mo', features: ['Advanced features'] }]
-      }))
-    },
-    {
-      id: '3',
-      name: 'Video Editing',
-      description: 'Professional video editing tools powered by AI for automatic cutting, effects, and enhancement.',
-      tool_count: 18,
-      tools: Array.from({ length: 12 }, (_, i) => ({
-        id: `video-${i + 1}`,
-        name: `AI Video Editor ${i + 1}`,
-        description: 'Professional video editing with AI-powered automation',
-        url: 'https://example.com',
-        category_id: '3',
-        image_url: 'https://images.unsplash.com/photo-1635776062127-d379bfcba9f8?auto=format&fit=crop&q=80&w=400',
-        created_at: new Date().toISOString(),
-        pricing: [{ plan: 'Premium', price: '$29/mo', features: ['Pro features'] }]
-      }))
-    }
-  ],
-  agents: [
-    {
-      id: '1',
-      name: 'ContentGenius',
-      description: 'Advanced AI agent for content creation and optimization',
-      capabilities: ['Content Generation', 'SEO Optimization'],
-      api_endpoint: 'https://example.com',
-      pricing_type: 'freemium',
-      status: 'active',
-      image_url: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=400',
-      is_available_24_7: true,
-      user_count: 5000,
-      has_fast_response: true,
-      is_secure: true
-    }
-  ]
-};
-
-// Cache for API responses
-const cache = new Map();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+// Ultra-fast cache system
+const dataCache = new Map();
+const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes for faster updates
 
 interface Category {
   id: string;
@@ -131,121 +61,119 @@ interface CategoryWithTools {
 
 function Home() {
   const navigate = useNavigate();
-  const [categoriesWithTools, setCategoriesWithTools] = useState<CategoryWithTools[]>(STATIC_DATA.categories);
-  const [agents, setAgents] = useState<Agent[]>(STATIC_DATA.agents);
+  const [categoriesWithTools, setCategoriesWithTools] = useState<CategoryWithTools[]>([]);
+  const [agents, setAgents] = useState<Agent[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [activeFilter, setActiveFilter] = useState<'today' | 'new' | 'popular'>('new');
-  const [filteredTools, setFilteredTools] = useState<Tool[]>(STATIC_DATA.categories[0].tools.slice(0, 8));
+  const [filteredTools, setFilteredTools] = useState<Tool[]>([]);
   const [loading, setLoading] = useState(false);
-  const [dataSource, setDataSource] = useState<'static' | 'api'>('static');
+  const [error, setError] = useState<string | null>(null);
 
-  // Ultra-fast data fetching with aggressive caching
+  // Fetch REAL data from Supabase
   useEffect(() => {
     async function fetchData() {
-      // Check cache first
-      const cacheKey = 'homepage-data';
-      const cached = cache.get(cacheKey);
+      const cacheKey = 'real-homepage-data';
+      const cached = dataCache.get(cacheKey);
       
       if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        console.log('📦 Using cached data');
         setCategoriesWithTools(cached.categories);
         setAgents(cached.agents);
-        setDataSource('api');
+        setFilteredTools(cached.filteredTools);
         return;
       }
 
-      // Only fetch if Supabase is available
       if (!supabase) {
-        setDataSource('static');
+        setError('Supabase not configured');
         return;
       }
 
       try {
         setLoading(true);
+        setError(null);
+        console.log('🚀 Fetching REAL data from Supabase...');
         
-        // Ultra-fast parallel requests with timeout
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1000); // 1 second timeout
-
-        const [categoriesResult, toolsResult, agentsResult] = await Promise.allSettled([
+        // Fetch ALL categories (20+) and tools in parallel
+        const [categoriesResult, toolsResult, agentsResult] = await Promise.all([
           supabase
             .from('categories')
-            .select('id, name, description')
+            .select('*')
             .order('name')
-            .limit(10)
-            .abortSignal(controller.signal),
+            .limit(50), // Get up to 50 categories
           
           supabase
             .from('tools')
-            .select('id, name, description, url, category_id, image_url, created_at, pricing')
+            .select('*')
             .order('created_at', { ascending: false })
-            .limit(50) // Reduced for faster loading
-            .abortSignal(controller.signal),
+            .limit(1000), // Get more tools for better distribution
           
           supabase
             .from('agents')
             .select('*')
             .eq('status', 'active')
-            .limit(3)
-            .abortSignal(controller.signal)
+            .limit(10)
         ]);
 
-        clearTimeout(timeoutId);
+        console.log('📊 Categories fetched:', categoriesResult.data?.length);
+        console.log('🔧 Tools fetched:', toolsResult.data?.length);
+        console.log('🤖 Agents fetched:', agentsResult.data?.length);
 
-        // Process successful results
-        if (categoriesResult.status === 'fulfilled' && categoriesResult.value.data &&
-            toolsResult.status === 'fulfilled' && toolsResult.value.data) {
-          
-          const toolsByCategory = toolsResult.value.data.reduce((acc: Record<string, Tool[]>, tool: Tool) => {
+        if (categoriesResult.data && toolsResult.data) {
+          // Group tools by category
+          const toolsByCategory = toolsResult.data.reduce((acc: Record<string, Tool[]>, tool: Tool) => {
             if (!acc[tool.category_id]) acc[tool.category_id] = [];
             acc[tool.category_id].push(tool);
             return acc;
           }, {});
-
-          const processedCategories = categoriesResult.value.data
+          
+          // Process categories with their tools, ordered by tool count
+          const processedCategories = categoriesResult.data
             .map((category: Category) => ({
               ...category,
               tool_count: toolsByCategory[category.id]?.length || 0,
               tools: (toolsByCategory[category.id] || []).slice(0, 12)
             }))
             .filter((category: CategoryWithTools) => category.tool_count > 0)
-            .sort((a: CategoryWithTools, b: CategoryWithTools) => b.tool_count - a.tool_count);
+            .sort((a: CategoryWithTools, b: CategoryWithTools) => b.tool_count - a.tool_count)
+            .slice(0, 30); // Show top 30 categories
 
+          console.log('✅ Processed categories:', processedCategories.length);
           setCategoriesWithTools(processedCategories);
           
-          // Set filtered tools for "new" filter
+          // Set filtered tools for featured section
           const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-          const newTools = toolsResult.value.data
+          const newTools = toolsResult.data
             .filter((tool: Tool) => new Date(tool.created_at) >= weekAgo)
             .slice(0, 8);
           setFilteredTools(newTools);
 
-          // Cache the results
-          cache.set(cacheKey, {
+          // Cache the real data
+          dataCache.set(cacheKey, {
             categories: processedCategories,
-            agents: agentsResult.status === 'fulfilled' ? agentsResult.value.data || [] : [],
+            agents: agentsResult.data || [],
+            filteredTools: newTools,
             timestamp: Date.now()
           });
 
-          setDataSource('api');
+          console.log('💾 Data cached successfully');
         }
 
-        if (agentsResult.status === 'fulfilled' && agentsResult.value.data) {
-          setAgents(agentsResult.value.data);
+        if (agentsResult.data) {
+          setAgents(agentsResult.data);
         }
 
       } catch (error) {
-        console.warn('API fetch failed, using static data:', error);
-        setDataSource('static');
+        console.error('❌ Failed to fetch real data:', error);
+        setError(`Failed to load data: ${error.message}`);
       } finally {
         setLoading(false);
       }
     }
     
-    // Delay API fetch to prioritize initial render
-    const timeoutId = setTimeout(fetchData, 100);
-    return () => clearTimeout(timeoutId);
+    // Fetch immediately for real data
+    fetchData();
   }, []);
 
   // Optimized filter function with memoization
@@ -472,9 +400,14 @@ function Home() {
             </section>
 
             {/* Data Source Indicator */}
-            {dataSource === 'static' && (
-              <div className="text-xs text-gray-500 mb-2">
-                Using cached data for optimal performance
+            {loading && (
+              <div className="text-xs text-royal-gold mb-2">
+                🚀 Loading real data...
+              </div>
+            )}
+            {error && (
+              <div className="text-xs text-red-400 mb-2">
+                ⚠️ {error}
               </div>
             )}
           </article>
