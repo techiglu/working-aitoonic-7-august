@@ -1,3 +1,5 @@
+import { supabase } from '../lib/supabase';
+
 export async function checkDuplicateUrl(url: string) {
   const { data: existingTools } = await supabase
     .from('tools')

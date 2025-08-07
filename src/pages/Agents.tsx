@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Bot, Check, ExternalLink, ArrowRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { Link } from 'react-router-dom';
+import { LazyImage } from '../components/LazyImage';
 
 interface Agent {
   id: string;

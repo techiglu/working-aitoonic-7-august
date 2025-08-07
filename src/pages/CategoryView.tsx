@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { SEO } from '../components/SEO';
 import { generateCategorySchema } from '../utils/schema';
 import { LazyImage } from '../components/LazyImage';
-import { Pagination } from '../components/Pagination';
-import { usePagination } from '../hooks/usePagination';
 
 interface Category {
   id: string;

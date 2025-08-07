@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Sparkles, Search, Bot, ArrowRight, Filter, TrendingUp, Calendar, Clock, BookOpen, Users, Zap } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { Link, useNavigate } from 'react-router-dom';
+import { LazyImage, OptimizedImage } from '../components/LazyImage';
 
 interface Category {
   id: string;

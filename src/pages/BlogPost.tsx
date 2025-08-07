@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, ChevronRight, Share2, Bookmark, ThumbsUp, MessageCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { LazyImage } from '../components/LazyImage';
 
 interface BlogPost {
   id: string;

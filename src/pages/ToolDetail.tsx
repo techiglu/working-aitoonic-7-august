@@ -4,6 +4,7 @@ import { Star, Bot, ExternalLink, ChevronRight, DollarSign } from 'lucide-react'
 import { supabase } from '../lib/supabase';
 import { SEO } from '../components/SEO';
 import { generateToolSchema } from '../utils/schema';
+import { LazyImage } from '../components/LazyImage';
 
 interface Tool {
   id: string;
@@ -114,28 +115,27 @@ function ToolDetail() {
           title={tool.seo_title || tool.name}  // Set title based on seo_title or tool.name
           description={tool.seo_description || tool.description}  // Set description based on seo_description or tool.description
           image={tool.image_url}
-          type="product"
-          schema={generateToolSchema(tool)}
         />
-      )}
-
-      <main className="min-h-screen bg-royal-dark py-20">
-        <div className="container mx-auto px-4">
-          {/* Breadcrumbs */}
-          <nav className="flex items-center space-x-2 text-sm mb-8 overflow-x-auto whitespace-nowrap pb-2">
-            <Link to="/" className="text-gray-400 hover:text-white">Home</Link>
-            <ChevronRight className="w-4 h-4 text-gray-600 flex-shrink-0" />
-            {category && (
-              <>
-                <Link
-                  to={`/category/${category.name.toLowerCase().replace(/\s+/g, '-')}`}
-                  className="text-gray-400 hover:text-white"
-                >
-                  {category.name}
-                </Link>
-                <ChevronRight className="w-4 h-4 text-gray-600 flex-shrink-0" />
-              </>
-            )}
+          
+          {/* Features and Use Cases */}
+          <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+            <div className="lg:col-span-2 space-y-8">
+              {/* Features */}
+              {tool.features && tool.features.length > 0 && (
+                <article className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
+                  <h2 className="text-2xl font-bold mb-6">Key Features</h2>
+                  <ul className="grid md:grid-cols-2 gap-6">
+                    {tool.features.map((feature, index) => (
+                      <li key={index} className="flex items-start space-x-3">
+                        <div>
+                          <h3 className="font-semibold text-white mb-1">{feature.title}</h3>
+                          <p className="text-gray-400">{feature.description}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              )}
             <mark className="text-gray-300">{tool.name}</mark>
           </nav>
 
@@ -251,6 +251,7 @@ function ToolDetail() {
               )}
 
               {/* Use Cases */}
+              {/* Use Cases */}
               {tool.useCases && tool.useCases.length > 0 && (
                 <article className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
                   <h2 className="text-2xl font-bold mb-6">Use Cases</h2>
@@ -266,9 +267,9 @@ function ToolDetail() {
                   </ul>
                 </article>
               )}
-            </section>
-          </div>
-        </div>
+            </div>
+          </section>
+        </article>
       </main>
     </>
   );

@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ChevronRight, Check, X, ArrowRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { SEO } from '../components/SEO';
+import { LazyImage } from '../components/LazyImage';
 
 interface Tool {
   id: string;

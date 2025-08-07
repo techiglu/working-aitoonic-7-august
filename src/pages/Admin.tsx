@@ -473,7 +473,7 @@ const Admin: React.FC = () => {
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           Content Type
                         </label>
-                        <section className="flex items-center space-x-6">
+                        <div className="flex items-center space-x-6">
                           <label className="flex items-center space-x-2">
                             <input
                               type="radio"
@@ -496,8 +496,8 @@ const Admin: React.FC = () => {
                             />
                             <span className="text-gray-300">AI Generated</span>
                           </label>
-                        </section>
-                      </fieldset>
+                        </div>
+                      </section>
 
                       <section>
                         <label className="block text-sm font-medium text-gray-300 mb-2">

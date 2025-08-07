@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-interface OptimizedLazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt: string;
   width?: number;
@@ -22,7 +22,7 @@ export function LazyImage({
   quality = 80,
   className = '',
   ...props
-}: OptimizedLazyImageProps) {
+}: LazyImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
   const [error, setError] = useState(false);
@@ -106,3 +106,6 @@ export function LazyImage({
     </div>
   );
 }
+
+// Export alias for backward compatibility
+export const OptimizedImage = LazyImage;
