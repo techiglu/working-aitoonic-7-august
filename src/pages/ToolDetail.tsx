@@ -71,6 +71,8 @@ function ToolDetail() {
             pricing,
             categories!inner(id, name)
           `)
+          .eq('slug', slug)
+          .single();
         if (toolData) {
           setTool(toolData);
           setCategory(toolData.categories);
@@ -154,7 +156,7 @@ function ToolDetail() {
                   <ChevronRight className="w-4 h-4 text-gray-600 flex-shrink-0" />
                 </>
               )}
-            <mark className="text-gray-300">{tool.name}</mark>
+              <mark className="text-gray-300">{tool.name}</mark>
             </div>
           </nav>
 
@@ -189,8 +191,8 @@ function ToolDetail() {
                     <div>
                       <h1 className="text-3xl font-bold gradient-text">{tool.name}</h1>
                       <div className="flex flex-wrap items-center gap-4 mt-2">
-                        {tool.rating && (
-                      {tool.rating && tool.rating > 0 && (
+                        {tool.rating && tool.rating > 0 && (
+                          <div className="flex items-center">
                             {[...Array(5)].map((_, i) => (
                               <Star 
                                 key={i}
@@ -201,12 +203,12 @@ function ToolDetail() {
                             <mark className="ml-2 text-gray-300">({tool.rating})</mark>
                           </div>
                         )}
+                        {tool.featured && (
+                          <mark className="bg-royal-gold text-royal-dark px-3 py-1 rounded-full text-sm font-medium">
+                            Featured
+                          </mark>
+                        )}
                         {category && (
-                      {tool.featured && (
-                        <mark className="bg-royal-gold text-royal-dark px-3 py-1 rounded-full text-sm font-medium">
-                          Featured
-                        </mark>
-                      )}
                           <Link
                             to={`/category/${category.name.toLowerCase().replace(/\s+/g, '-')}`}
                             className="text-royal-gold hover:text-royal-gold/80 transition-colors"
@@ -273,15 +275,6 @@ function ToolDetail() {
                 </article>
               )}
 
-              {/* How to Use */}
-              {tool.how_to_use && tool.how_to_use.trim() && (
-                <article className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
-                  <h2 className="text-2xl font-bold mb-6">How to Use This Tool</h2>
-                  <div className="prose prose-invert prose-lg max-w-none">
-                    <div dangerouslySetInnerHTML={{ __html: tool.how_to_use.replace(/\n/g, '<br>') }} />
-                  </div>
-                </article>
-              )}
               {/* Use Cases */}
               {tool.useCases && tool.useCases.length > 0 && (
                 <article className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter">
@@ -299,98 +292,7 @@ function ToolDetail() {
                 </article>
               )}
             </div>
-
-            {/* Pricing Plans */}
-            {tool.pricing && tool.pricing.length > 0 && (
-              <aside className="lg:col-span-1">
-                <article className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter sticky top-8">
-                  <h2 className="text-2xl font-bold mb-6">Pricing Plans</h2>
-                  <ul className="space-y-6">
-                    {tool.pricing.map((plan, index) => (
-                      <li
-                        key={index}
-                        className={`bg-royal-dark rounded-lg p-6 border ${
-                          index === 1 ? 'border-royal-gold' : 'border-royal-dark-lighter'
-                        }`}
-                      >
-                        <header className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-bold text-white">{plan.plan}</h3>
-                          <mark className="text-royal-gold font-bold text-xl">{plan.price}</mark>
-                        </header>
-                        <ul className="space-y-2">
-                          {plan.features.map((feature, i) => (
-                            <li key={i} className="flex items-start text-gray-300">
-                              <span className="w-2 h-2 bg-royal-gold rounded-full mt-2 mr-3 flex-shrink-0" />
-                              {feature}
-                            </li>
-                          ))}
-                        </ul>
-                        {index === 1 && (
-                          <footer className="mt-4">
-                            <a
-                              href={tool.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="w-full inline-flex items-center justify-center bg-royal-gold text-royal-dark px-4 py-2 rounded-lg font-bold hover:bg-opacity-90 transition-all"
-                            >
-                              Get Started
-                            </a>
-                          </footer>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </article>
-              </aside>
-            )}
           </section>
-
-          {/* Similar Tools */}
-          {similarTools.length > 0 && (
-            <section className="bg-royal-dark-card rounded-2xl p-4 sm:p-8 border border-royal-dark-lighter mt-8">
-              <h2 className="text-2xl font-bold mb-8">Similar Tools in {category?.name}</h2>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {similarTools.map((similarTool) => (
-                  <li key={similarTool.id}>
-                    <Link
-                      to={`/ai/${similarTool.name.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="group block"
-                    >
-                      <figure className="aspect-video rounded-lg overflow-hidden mb-4">
-                        <LazyImage
-                          src={similarTool.image_url || 'https://i.imgur.com/ZXqf6Kx.png'}
-                          alt={similarTool.image_alt || similarTool.name}
-                          width={300}
-                          height={169}
-                          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </figure>
-                      <article>
-                        <h3 className="font-semibold text-white group-hover:text-royal-gold transition-colors mb-2">
-                          {similarTool.name}
-                        </h3>
-                        <p className="text-sm text-gray-400 line-clamp-2">
-                          {similarTool.description}
-                        </p>
-                        {similarTool.rating && similarTool.rating > 0 && (
-                          <div className="flex items-center mt-2">
-                            {[...Array(5)].map((_, i) => (
-                              <Star 
-                                key={i}
-                                className="w-3 h-3 text-royal-gold" 
-                                fill={i < Math.floor(similarTool.rating) ? "currentColor" : "none"}
-                              />
-                            ))}
-                            <span className="ml-1 text-xs text-gray-400">({similarTool.rating})</span>
-                          </div>
-                        )}
-                      </article>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
         </div>
       </main>
     </>
