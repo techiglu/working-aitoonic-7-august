@@ -121,7 +121,24 @@ function ToolDetail() {
       <main className="min-h-screen bg-royal-dark py-20">
         <div className="container mx-auto px-4">
           <nav className="mb-8">
+            <div className="flex items-center space-x-2 text-sm overflow-x-auto whitespace-nowrap pb-2">
+              <Link to="/" className="text-gray-400 hover:text-white">Home</Link>
+              <ChevronRight className="w-4 h-4 text-gray-600 flex-shrink-0" />
+              <Link to="/categories" className="text-gray-400 hover:text-white">Tools</Link>
+              <ChevronRight className="w-4 h-4 text-gray-600 flex-shrink-0" />
+              {category && (
+                <>
+                  <Link 
+                    to={`/category/${category.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    {category.name}
+                  </Link>
+                  <ChevronRight className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                </>
+              )}
             <mark className="text-gray-300">{tool.name}</mark>
+            </div>
           </nav>
 
           {/* Tool Details */}
