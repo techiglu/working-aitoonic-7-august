@@ -1,5 +1,6 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import pkg from 'react-helmet-async';
+const { Helmet } = pkg;
 import { Mail, DollarSign, FileText, Link as LinkIcon } from 'lucide-react';
 
 function Advertise() {

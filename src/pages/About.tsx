@@ -1,5 +1,6 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import pkg from 'react-helmet-async';
+const { Helmet } = pkg;
 import { User, Mail, Linkedin } from 'lucide-react';
 
 function About() {

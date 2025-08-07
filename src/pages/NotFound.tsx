@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import pkg from 'react-helmet-async';
+const { Helmet } = pkg;
 import { Home, Search, AlertCircle } from 'lucide-react';
 
 function NotFound() {
