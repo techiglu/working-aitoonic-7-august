@@ -91,29 +91,31 @@ function Home() {
         
         console.log('✅ Connection verified, fetching data...');
         
-        // Fetch categories and tools with better error handling
-        const [categoriesResult, toolsResult] = await Promise.all([
-          supabase
-            .from('categories')
-            .select('id, name, description, created_at')
-            .order('name')
-            .limit(30),
-          
-          supabase
-            .from('tools')
-            .select('id, name, description, url, category_id, image_url, created_at, features, useCases, pricing')
-            .order('created_at', { ascending: false })
-            .limit(200)
-        ]);
+        // Fetch categories first
+        console.log('📂 Fetching categories...');
+        const categoriesResult = await supabase
+          .from('categories')
+          .select('id, name, description, created_at')
+          .order('name')
+          .limit(30);
 
         console.log('📊 Categories result:', categoriesResult);
-        console.log('🔧 Tools result:', toolsResult);
         
         if (categoriesResult.error) {
           console.error('❌ Categories fetch error:', categoriesResult.error);
           setError(`Failed to load categories: ${categoriesResult.error.message}`);
           return;
         }
+        
+        // Fetch tools second
+        console.log('🔧 Fetching tools...');
+        const toolsResult = await supabase
+          .from('tools')
+          .select('id, name, description, url, category_id, image_url, created_at, features, useCases, pricing')
+          .order('created_at', { ascending: false })
+          .limit(200);
+
+        console.log('🔧 Tools result:', toolsResult);
         
         if (toolsResult.error) {
           console.error('❌ Tools fetch error:', toolsResult.error);

@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Direct Supabase configuration - your actual credentials
+// Your actual Supabase credentials
 const supabaseUrl = 'https://opmsmqtxqrivlyigpudk.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wbXNtcXR4cXJpdmx5aWdwdWRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM1OTUzOTQsImV4cCI6MjA1OTE3MTM5NH0.H-tPEzI6f_4hhptimscHWbfw4sqeGuLe09zfEyEHlHA';
 
@@ -11,65 +11,68 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 console.log('🔗 Connecting to Supabase:', supabaseUrl);
+console.log('🔑 Using API Key:', supabaseAnonKey.substring(0, 20) + '...');
 
-// Create Supabase client with CORS-friendly configuration
+// Create Supabase client with proper authentication headers
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    persistSession: false,
-    autoRefreshToken: false,
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: false
   },
   global: {
     headers: {
-      'x-client-info': 'aitoonic-web',
+      'apikey': supabaseAnonKey,
+      'Authorization': `Bearer ${supabaseAnonKey}`,
       'Content-Type': 'application/json',
-    },
-    fetch: (url, options = {}) => {
-      console.log('🌐 Making request to:', url);
-      return fetch(url, {
-        ...options,
-        mode: 'cors',
-        credentials: 'omit',
-        headers: {
-          ...options.headers,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-    },
+      'Prefer': 'return=minimal'
+    }
   },
   db: {
-    schema: 'public',
-  },
-  realtime: {
-    params: {
-      eventsPerSecond: 10,
-    },
-  },
+    schema: 'public'
+  }
 });
 
-// Test connection function
+// Test connection function with proper error handling
 export async function testSupabaseConnection() {
   try {
     console.log('🧪 Testing Supabase connection...');
+    console.log('📡 Making request to:', `${supabaseUrl}/rest/v1/categories`);
     
     const { data, error, count } = await supabase
       .from('categories')
-      .select('id', { count: 'exact' })
+      .select('id, name', { count: 'exact' })
       .limit(1);
     
     if (error) {
-      console.error('❌ Connection test failed:', error);
+      console.error('❌ Supabase query error:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
       return { success: false, error: error.message };
     }
     
     console.log('✅ Connection test successful!');
-    console.log('📊 Categories table accessible, total count:', count);
-    return { success: true, count };
+    console.log('📊 Sample data:', data);
+    console.log('📊 Total categories count:', count);
+    return { success: true, count, data };
     
   } catch (err) {
-    console.error('❌ Connection test error:', err);
+    console.error('❌ Connection test network error:', err);
     return { success: false, error: err.message };
   }
 }
 
-console.log('✅ Supabase client initialized successfully');
+// Test the connection immediately
+testSupabaseConnection().then(result => {
+  if (result.success) {
+    console.log('🎉 Supabase connection verified!');
+  } else {
+    console.error('💥 Supabase connection failed:', result.error);
+  }
+});
+
+console.log('✅ Supabase client initialized');
