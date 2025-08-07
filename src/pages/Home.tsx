@@ -416,13 +416,12 @@ function Home() {
                   className="bg-royal-dark-card rounded-xl overflow-hidden group hover:scale-105 transition-all duration-300 border border-royal-dark-lighter hover:border-royal-gold"
                 >
                   <div className="aspect-square relative overflow-hidden">
-                    <LazyImage
+                    <OptimizedImage
                       src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
                       alt={tool.name}
                       width={400}
                       height={400}
                       priority={index < 4}
-                      className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-3">
@@ -480,7 +479,6 @@ function Home() {
                       <OptimizedImage
                         src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
                         className="w-full h-full object-cover"
-                        loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                       <div className="absolute bottom-0 left-0 right-0 p-3">

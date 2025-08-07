@@ -58,6 +58,7 @@ export function SEO({
       {keywords && <meta name="keywords" content={keywords} />}
       {noindex && <meta name="robots" content="noindex, nofollow" />}
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="generator" content="Vite + React" />
 
       {/* Canonical Tag (Only one!) */}
       {canonicalUrl && (

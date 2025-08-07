@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "dev:ssr": "vite dev",
-    "build": "vite build",
+    "build": "node scripts/generate-prerender-routes.js && vite build",
     "build:ssr": "vite build",
+    "prerender": "node scripts/generate-prerender-routes.js",
     "preview": "vite preview",
     "preview:ssr": "vite preview",
     "lint": "eslint ."

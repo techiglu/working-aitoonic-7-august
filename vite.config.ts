@@ -1,10 +1,53 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { prerender } from 'vite-plugin-prerender';
+import { generatePrerenderRoutes } from './scripts/generate-prerender-routes.js';
 
-export default defineConfig({
+export default defineConfig(async ({ command }) => {
+  // Generate routes for prerendering during build
+  let prerenderRoutes = [
+    '/',
+    '/categories',
+    '/ai-agent',
+    '/about',
+    '/contact',
+    '/terms',
+    '/privacy',
+    '/advertise',
+    '/affiliate',
+    '/sitemap'
+  ];
+
+  if (command === 'build') {
+    try {
+      prerenderRoutes = await generatePrerenderRoutes();
+    } catch (error) {
+      console.warn('⚠️  Could not generate dynamic routes, using static routes only');
+    }
+  }
+
+  return {
   plugins: [
     react(),
+    prerender({
+      routes: prerenderRoutes,
+      minify: {
+        collapseBooleanAttributes: true,
+        collapseWhitespace: true,
+        decodeEntities: true,
+        keepClosingSlash: true,
+        sortAttributes: true
+      },
+      postProcess(renderedRoute) {
+        // Clean up any hydration artifacts
+        renderedRoute.html = renderedRoute.html
+          .replace(/data-reactroot=""/g, '')
+          .replace(/data-react-helmet="true"/g, '')
+          .replace(/<!--react-empty[^>]*-->/g, '');
+        return renderedRoute;
+      }
+    }),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
@@ -47,4 +90,5 @@ export default defineConfig({
       'Cache-Control': 'public, max-age=31536000'
     }
   }
+  };
 });
