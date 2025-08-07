@@ -856,6 +856,10 @@ const Admin: React.FC = () => {
                 </form>
               </article>
             )}
+          </section>
+        </section>
+      </article>
+    </main>
   );
 };
 
