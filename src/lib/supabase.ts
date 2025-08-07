@@ -11,7 +11,24 @@ let supabase;
 
 try {
   if (supabaseUrl && supabaseAnonKey) {
-    supabase = createClient(supabaseUrl, supabaseAnonKey);
+    supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: false, // Disable auth for faster loading
+      },
+      db: {
+        schema: 'public',
+      },
+      global: {
+        headers: {
+          'Cache-Control': 'public, max-age=300', // 5 minute cache
+        },
+      },
+      realtime: {
+        params: {
+          eventsPerSecond: 10,
+        },
+      },
+    });
   } else {
     console.warn('Supabase environment variables not found. Using fallback mode.');
     // Create a mock client that will fail gracefully

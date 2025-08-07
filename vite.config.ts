@@ -4,7 +4,12 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      // Enable React Fast Refresh
+      fastRefresh: true,
+      // Optimize JSX runtime
+      jsxRuntime: 'automatic',
+    }),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
@@ -30,21 +35,49 @@ export default defineConfig({
     })
   ],
   optimizeDeps: {
-    exclude: ['lucide-react']
+    exclude: ['lucide-react'],
+    include: ['react', 'react-dom', 'react-router-dom', '@supabase/supabase-js']
   },
   build: {
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          ui: ['lucide-react', '@supabase/supabase-js']
+          ui: ['lucide-react', '@supabase/supabase-js'],
+          utils: ['react-helmet-async', 'react-hot-toast']
         }
       }
-    }
+    },
+    // Enable minification and compression
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+    // Optimize chunk size
+    chunkSizeWarningLimit: 1000,
   },
   server: {
     headers: {
       'Cache-Control': 'public, max-age=31536000'
+    },
+    // Enable HTTP/2 push
+    http2: true,
+    // Optimize dev server
+    hmr: {
+      overlay: false
     }
+  },
+  // Enable experimental features for better performance
+  esbuild: {
+    target: 'es2020',
+    format: 'esm',
+    treeShaking: true,
+  },
+  // Optimize CSS
+  css: {
+    devSourcemap: false,
   }
 });

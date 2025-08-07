@@ -6,11 +6,18 @@ import { Toaster } from 'react-hot-toast';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { ScrollToTop } from './components/ScrollToTop';
+import { preloadCriticalResources } from './utils/preloadCriticalImages';
 import './index.css';
+
+// Preload critical resources immediately
+preloadCriticalResources();
 
 // Only render if we're in the browser and not using SSR
 if (typeof window !== 'undefined') {
-  ReactDOM.createRoot(document.getElementById('root')!).render(
+  // Use concurrent features for better performance
+  const root = ReactDOM.createRoot(document.getElementById('root')!);
+  
+  root.render(
     <React.StrictMode>
       <HelmetProvider>
         <BrowserRouter>
@@ -24,7 +31,8 @@ if (typeof window !== 'undefined') {
                   background: '#0F1428',
                   color: '#fff',
                   border: '1px solid #1A2138'
-                }
+                },
+                duration: 3000,
               }}
             />
           </AuthProvider>
