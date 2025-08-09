@@ -178,15 +178,7 @@ function ToolDetail() {
               <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-6 space-y-4 sm:space-y-0">
                 <div className="flex-1">
                   <header className="flex items-center space-x-4 mb-4">
-                    {tool.favicon_url ? (
-                      <img 
-                        src={tool.favicon_url} 
-                        alt={`${tool.name} logo`}
-                        className="w-12 h-12 rounded-lg object-contain bg-white p-2"
-                      />
-                    ) : (
-                      <Bot className="w-12 h-12 text-royal-gold" />
-                    )}
+                    <Bot className="w-12 h-12 text-royal-gold" />
                     <div>
                       <h1 className="text-3xl font-bold gradient-text">{tool.name}</h1>
                       <div className="flex flex-wrap items-center gap-4 mt-2">
