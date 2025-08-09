@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import { AdminLogin } from '../components/AdminLogin';
 import { Helmet } from 'react-helmet-async';
-import { Plus, Edit, Trash2, Save, X, Upload, Image as ImageIcon } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, Upload, Image as ImageIcon, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Tool {
@@ -114,6 +115,7 @@ function Admin() {
   const [selectedAgentImageFile, setSelectedAgentImageFile] = useState<File | null>(null);
   const [uploadingToolImage, setUploadingToolImage] = useState(false);
   const [uploadingAgentImage, setUploadingAgentImage] = useState(false);
+  const [showLogin, setShowLogin] = useState(!session);
 
   useEffect(() => {
     if (session) {
@@ -217,6 +219,26 @@ function Admin() {
       setUploadingAgentImage(false);
     }
   };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setShowLogin(true);
+      toast.success('Logged out successfully');
+    } catch (error) {
+      toast.error('Error logging out');
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    setShowLogin(false);
+    fetchData(); // Refresh data after login
+  };
+
+  // Show login form if not authenticated
+  if (!session || showLogin) {
+    return <AdminLogin onLoginSuccess={handleLoginSuccess} />;
+  }
 
   const handleAddToolClick = () => {
     setCurrentTool({
@@ -553,17 +575,6 @@ function Admin() {
     }));
   };
 
-  if (!session) {
-    return (
-      <div className="min-h-screen bg-royal-dark flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Access Denied</h1>
-          <p className="text-gray-400">You need to be logged in to access the admin panel.</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-royal-dark py-8">
       <Helmet>
@@ -573,7 +584,16 @@ function Admin() {
 
       <div className="container mx-auto px-4">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold gradient-text mb-8">Admin Panel</h1>
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-3xl font-bold gradient-text">Admin Panel</h1>
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </button>
+          </div>
 
           {/* Tabs */}
           <div className="flex space-x-1 mb-8 bg-royal-dark-card rounded-lg p-1">
