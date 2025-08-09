@@ -61,14 +61,14 @@ function ToolDetail() {
             rating,
             seo_title,
             seo_description,
+            features,
+            useCases,
+            pricing,
             slug,
             image_alt,
             how_to_use,
             published_at,
             featured,
-            features,
-            useCases,
-            pricing,
             categories!inner(id, name)
           `)
           .eq('slug', slug)

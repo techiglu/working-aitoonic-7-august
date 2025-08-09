@@ -8,8 +8,6 @@ import Agents from './pages/Agents';
 import AgentDetail from './pages/AgentDetail';
 import Compare from './pages/Compare';
 import Search from './pages/Search';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Terms from './pages/Terms';
@@ -36,8 +34,6 @@ function App() {
           <Route path="/ai-agent/:slug" element={<AgentDetail />} />
           <Route path="/compare/:tools" element={<Compare />} />
           <Route path="/s/:term" element={<Search />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms" element={<Terms />} />

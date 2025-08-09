@@ -8,5 +8,6 @@ export const prerenderRoutes = [
   "/privacy",
   "/advertise",
   "/affiliate",
-  "/sitemap"
+  "/sitemap",
+  "/admin"
 ];
