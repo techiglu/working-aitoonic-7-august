@@ -1,25 +1,50 @@
-# Allow all crawlers
+# robots.txt for aitoonic.com (AI Tools Directory)
+# This file is used to manage the crawling and indexing of your website by search engines.
+
+# General User-agent Instructions
 User-agent: *
+# Disallow sensitive or non-indexable areas
+Disallow: /admin/
+Disallow: /login/
+Disallow: /checkout/
+Disallow: /cart/
+Disallow: /order/
+Disallow: /search/
+Disallow: /private/
+
+# Allow bots to crawl important content like AI tools, comparison pages, and categories
+Allow: /ai/
+Allow: /compare/
+Allow: /category/
+Allow: /ai-agent/
+Allow: /about/
+Allow: /contact/
+Allow: /advertise/
+Allow: /affiliate/
+Allow: /terms/
+Allow: /privacy/
+Allow: /sitemap/
 Allow: /
 
-# Sitemap location
+# Sitemap Location
 Sitemap: https://aitoonic.com/sitemap.xml
 
-# Disallow admin area
-Disallow: /admin
+# Crawl-delay: Note: This is a non-standard directive and may not be honored by all crawlers (e.g., Googlebot).
+# Google prefers crawl rate to be set in Google Search Console.
+Crawl-delay: 2
 
-# Crawl-delay
-Crawl-delay: 10
+# For Googlebot (Google's crawler), we may want to give it special instructions
+User-agent: Googlebot
+Crawl-delay: 1
 
-# Additional rules
-Allow: /*.js
-Allow: /*.css
-Allow: /*.png
-Allow: /*.jpg
-Allow: /*.gif
-Allow: /*.svg
-Allow: /*.ico
+# Block Specific Crawlers (e.g., specific bots that cause heavy load)
+User-agent: AhrefsBot
+Disallow: /
 
-# Prevent duplicate content
-Disallow: /*?*
-Disallow: /*?
+User-agent: SemrushBot
+Disallow: /
+
+# Prevent Crawling of Duplicate Content (e.g., session IDs, tracking URLs)
+User-agent: *
+Disallow: /*?sessionid
+Disallow: /*?ref=

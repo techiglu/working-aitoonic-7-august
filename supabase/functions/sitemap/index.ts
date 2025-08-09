@@ -48,6 +48,10 @@ Deno.serve(async (req) => {
     switch (path) {
       case 'index': {
         // Main sitemap index
+        // Note: 'compare' sitemap is not included because comparison pages are dynamically
+        // generated based on tool pairs (/compare/:tools) and there's no dedicated table
+        // storing predefined comparison pairs. Generating all possible combinations would
+        // result in an impractically large sitemap.
         const sitemaps = ['main', 'tools', 'categories', 'agents', 'search'];
         return new Response(generateSitemapIndex(sitemaps), { headers: corsHeaders });
       }
@@ -63,7 +67,8 @@ Deno.serve(async (req) => {
           { loc: 'https://aitoonic.com/terms', changefreq: 'monthly', priority: '0.5' },
           { loc: 'https://aitoonic.com/privacy', changefreq: 'monthly', priority: '0.5' },
           { loc: 'https://aitoonic.com/advertise', changefreq: 'monthly', priority: '0.7' },
-          { loc: 'https://aitoonic.com/affiliate', changefreq: 'monthly', priority: '0.5' }
+          { loc: 'https://aitoonic.com/affiliate', changefreq: 'monthly', priority: '0.5' },
+          { loc: 'https://aitoonic.com/sitemap', changefreq: 'monthly', priority: '0.6' }
         ];
         return new Response(generateUrlset(urls), { headers: corsHeaders });
       }
@@ -78,7 +83,7 @@ Deno.serve(async (req) => {
           loc: `https://aitoonic.com/ai/${tool.name.toLowerCase().replace(/\s+/g, '-')}`,
           lastmod: tool.updated_at || tool.created_at,
           changefreq: 'weekly',
-          priority: '0.8'
+          priority: '0.9'
         })) || [];
 
         return new Response(generateUrlset(urls), { headers: corsHeaders });
