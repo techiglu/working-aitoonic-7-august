@@ -41,8 +41,8 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
   };
 
   const handleDemoLogin = async () => {
-    setEmail('admin@aitoonic.com');
-    setPassword('admin123');
+    setEmail('dc556316@gmail.com');
+    setPassword('Deepak@@@qwer1234Monu@@@');
     
     // Auto-submit after setting demo credentials
     setTimeout(() => {
@@ -151,13 +151,13 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
 
           <div className="mt-6 text-center">
             <div className="text-sm text-gray-400">
-              <p className="mb-2">Demo Credentials:</p>
+              <p className="mb-2">Admin Credentials:</p>
               <p className="font-mono text-xs bg-royal-dark rounded px-2 py-1 inline-block">
-                Email: admin@aitoonic.com
+                Email: dc556316@gmail.com
               </p>
               <br />
               <p className="font-mono text-xs bg-royal-dark rounded px-2 py-1 inline-block mt-1">
-                Password: admin123
+                Password: Deepak@@@qwer1234Monu@@@
               </p>
             </div>
           </div>
