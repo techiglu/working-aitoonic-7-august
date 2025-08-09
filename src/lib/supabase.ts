@@ -11,7 +11,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 console.log('🔗 Connecting to Supabase:', supabaseUrl);
-console.log('🔑 Using API Key:', supabaseAnonKey.substring(0, 20) + '...');
 
 // Create Supabase client with proper authentication headers
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -20,24 +19,12 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     detectSessionInUrl: false
   },
-  global: {
-    headers: {
-      'apikey': supabaseAnonKey,
-      'Authorization': `Bearer ${supabaseAnonKey}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal'
-    }
-  },
-  db: {
-    schema: 'public'
-  }
 });
 
 // Test connection function with proper error handling
 export async function testSupabaseConnection() {
   try {
     console.log('🧪 Testing Supabase connection...');
-    console.log('📡 Making request to:', `${supabaseUrl}/rest/v1/categories`);
     
     const { data, error, count } = await supabase
       .from('categories')
@@ -46,23 +33,15 @@ export async function testSupabaseConnection() {
     
     if (error) {
       console.error('❌ Supabase query error:', error);
-      console.error('❌ Error details:', {
-        message: error.message,
-        details: error.details,
-        hint: error.hint,
-        code: error.code
-      });
       return { success: false, error: error.message };
     }
     
     console.log('✅ Connection test successful!');
-    console.log('📊 Sample data:', data);
-    console.log('📊 Total categories count:', count);
     return { success: true, count, data };
     
   } catch (err) {
     console.error('❌ Connection test network error:', err);
-    return { success: false, error: err.message };
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
   }
 }
 

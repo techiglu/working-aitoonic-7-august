@@ -57,7 +57,6 @@ function ToolDetail() {
             url,
             category_id,
             image_url,
-            favicon_url,
             rating,
             seo_title,
             seo_description,

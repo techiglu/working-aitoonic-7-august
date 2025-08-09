@@ -111,7 +111,7 @@ function Home() {
         console.log('🔧 Fetching tools...');
         const toolsResult = await supabase
           .from('tools')
-          .select('id, name, description, url, category_id, image_url, created_at, features, useCases, pricing')
+          .select('id, name, description, url, category_id, image_url, created_at, features, useCases, pricing, slug, seo_title, seo_description, rating, featured, image_alt, how_to_use, published_at')
           .order('created_at', { ascending: false })
           .limit(200);
 
