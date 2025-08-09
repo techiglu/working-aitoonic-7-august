@@ -61,11 +61,11 @@ function ToolDetail() {
             rating,
             seo_title,
             seo_description,
+            slug,
             image_alt,
             how_to_use,
             published_at,
             featured,
-            slug,
             features,
             useCases,
             pricing,
@@ -207,6 +207,11 @@ function ToolDetail() {
                           <mark className="bg-royal-gold text-royal-dark px-3 py-1 rounded-full text-sm font-medium">
                             Featured
                           </mark>
+                        )}
+                        {tool.published_at && (
+                          <span className="text-gray-400 text-sm">
+                            Published: {new Date(tool.published_at).toLocaleDateString()}
+                          </span>
                         )}
                         {category && (
                           <Link

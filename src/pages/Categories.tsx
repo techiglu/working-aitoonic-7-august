@@ -85,21 +85,7 @@ function Categories() {
               >
                 <header className="flex items-center space-x-4 mb-4">
                   <figure className="p-3 bg-royal-dark rounded-xl overflow-hidden">
-                    {category.image_url ? (
-                      <img 
-                        src={category.image_url} 
-                        alt={category.name}
-                        className="w-8 h-8 object-cover rounded"
-                      />
-                    ) : category.icon ? (
-                      <img 
-                        src={category.icon} 
-                        alt={category.name}
-                        className="w-8 h-8 object-contain"
-                      />
-                    ) : (
-                      <Sparkles className="w-8 h-8 text-royal-gold" />
-                    )}
+                    <Sparkles className="w-8 h-8 text-royal-gold" />
                   </figure>
                   <hgroup>
                     <h2 className="text-2xl font-bold text-white group-hover:text-royal-gold transition-colors">

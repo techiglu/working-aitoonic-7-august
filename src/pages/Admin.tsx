@@ -608,14 +608,15 @@ const Admin: React.FC = () => {
                             rows={3}
                             className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                             required={activeTab !== 'blog_posts'}
-                          />
+                        SEO Title
                         </section>
                       )}
 
-                      <section>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        value={editingItem.seo_title || ''}
+                        onChange={(e) => setEditingItem({...editingItem, seo_title: e.target.value})}
                           Image URL
-                        </label>
+                        placeholder="SEO optimized title (max 60 chars)"
+                        maxLength={60}
                         <input
                           type="text"
                           value={editingItem.image_url || ''}
@@ -635,18 +636,32 @@ const Admin: React.FC = () => {
                             value={editingItem.image_alt || ''}
                             onChange={(e) => setEditingItem({ ...editingItem, image_alt: e.target.value })}
                             className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                            placeholder="Descriptive alt text for the image"
+                        SEO Description
                           />
-                        </section>
-                      )}
-
-                      {activeTab === 'categories' && (
+                      <textarea
+                        value={editingItem.seo_description || ''}
+                        onChange={(e) => setEditingItem({...editingItem, seo_description: e.target.value})}
                         <section>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                        placeholder="SEO optimized description (max 160 chars)"
+                        maxLength={160}
+                        rows={2}
                             Icon
                           </label>
                           <input
                             type="text"
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Slug
+                    </label>
+                    <input
+                      type="text"
+                      value={editingItem.slug || ''}
+                      onChange={(e) => setEditingItem({...editingItem, slug: e.target.value})}
+                      className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                      placeholder="url-friendly-name"
+                      pattern="[a-z0-9-]+"
+                    />
+                  </div>
                             value={editingItem.icon || ''}
                             onChange={(e) => setEditingItem({ ...editingItem, icon: e.target.value })}
                             className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
@@ -712,6 +727,102 @@ const Admin: React.FC = () => {
                             </label>
                           </div>
                         </section>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Image Alt Text
+                      </label>
+                      <input
+                        type="text"
+                        value={editingItem.image_alt || ''}
+                        onChange={(e) => setEditingItem({...editingItem, image_alt: e.target.value})}
+                        className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        placeholder="Descriptive alt text for the image"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Slug
+                      </label>
+                      <input
+                        type="text"
+                        value={editingItem.slug || ''}
+                        onChange={(e) => setEditingItem({...editingItem, slug: e.target.value})}
+                        className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        placeholder="url-friendly-name"
+                        pattern="[a-z0-9-]+"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Rating (1-5)
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="5"
+                        step="0.1"
+                        value={editingItem.rating || ''}
+                        onChange={(e) => setEditingItem({...editingItem, rating: parseFloat(e.target.value) || null})}
+                        className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        placeholder="4.5"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Published Date
+                      </label>
+                      <input
+                        type="datetime-local"
+                        value={editingItem.published_at ? new Date(editingItem.published_at).toISOString().slice(0, 16) : ''}
+                        onChange={(e) => setEditingItem({...editingItem, published_at: e.target.value ? new Date(e.target.value).toISOString() : null})}
+                        className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                      />
+                    </div>
+                    <div className="flex items-center">
+                      <label className="flex items-center space-x-2 text-gray-300">
+                        <input
+                          type="checkbox"
+                          checked={editingItem.featured || false}
+                          onChange={(e) => setEditingItem({...editingItem, featured: e.target.checked})}
+                          className="w-4 h-4 text-royal-gold bg-royal-dark border-royal-dark-lighter rounded focus:ring-royal-gold focus:ring-2"
+                        />
+                        <span>Featured Tool</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        SEO Title
+                      </label>
+                      <input
+                        type="text"
+                        value={editingItem.seo_title || ''}
+                        onChange={(e) => setEditingItem({...editingItem, seo_title: e.target.value})}
+                        className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        placeholder="SEO optimized title (max 60 chars)"
+                        maxLength={60}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        SEO Description
+                      </label>
+                      <textarea
+                        value={editingItem.seo_description || ''}
+                        onChange={(e) => setEditingItem({...editingItem, seo_description: e.target.value})}
+                        className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        placeholder="SEO optimized description (max 160 chars)"
+                        maxLength={160}
+                        rows={2}
+                      />
+                    </div>
+                  </div>
                       )}
                     </section>
                   </fieldset>
@@ -726,6 +837,19 @@ const Admin: React.FC = () => {
                         </label>
                         <textarea
                           value={editingItem.how_to_use || ''}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      How to Use This Tool
+                    </label>
+                    <textarea
+                      value={editingItem.how_to_use || ''}
+                      onChange={(e) => setEditingItem({...editingItem, how_to_use: e.target.value})}
+                      className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                      rows={6}
+                      placeholder="Step-by-step instructions on how to use this tool..."
+                    />
+                  </div>
+
                           onChange={(e) => setEditingItem({ ...editingItem, how_to_use: e.target.value })}
                           rows={6}
                           className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
