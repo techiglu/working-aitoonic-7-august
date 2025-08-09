@@ -608,15 +608,28 @@ const Admin: React.FC = () => {
                             rows={3}
                             className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                             required={activeTab !== 'blog_posts'}
-                        SEO Title
+                          />
                         </section>
                       )}
 
-                        value={editingItem.seo_title || ''}
-                        onChange={(e) => setEditingItem({...editingItem, seo_title: e.target.value})}
+                      <section>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          SEO Title
+                        </label>
+                        <input
+                          type="text"
+                          value={editingItem.seo_title || ''}
+                          onChange={(e) => setEditingItem({...editingItem, seo_title: e.target.value})}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                          placeholder="SEO optimized title (max 60 chars)"
+                          maxLength={60}
+                        />
+                      </section>
+
+                      <section>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
                           Image URL
-                        placeholder="SEO optimized title (max 60 chars)"
-                        maxLength={60}
+                        </label>
                         <input
                           type="text"
                           value={editingItem.image_url || ''}
@@ -636,32 +649,31 @@ const Admin: React.FC = () => {
                             value={editingItem.image_alt || ''}
                             onChange={(e) => setEditingItem({ ...editingItem, image_alt: e.target.value })}
                             className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                        SEO Description
                           />
-                      <textarea
-                        value={editingItem.seo_description || ''}
-                        onChange={(e) => setEditingItem({...editingItem, seo_description: e.target.value})}
+                        </section>
+                      )}
+
+                      <section>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          SEO Description
+                        </label>
+                        <textarea
+                          value={editingItem.seo_description || ''}
+                          onChange={(e) => setEditingItem({...editingItem, seo_description: e.target.value})}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                          placeholder="SEO optimized description (max 160 chars)"
+                          maxLength={160}
+                          rows={2}
+                        />
+                      </section>
+
+                      {activeTab === 'categories' && (
                         <section>
-                        placeholder="SEO optimized description (max 160 chars)"
-                        maxLength={160}
-                        rows={2}
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
                             Icon
                           </label>
                           <input
                             type="text"
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Slug
-                    </label>
-                    <input
-                      type="text"
-                      value={editingItem.slug || ''}
-                      onChange={(e) => setEditingItem({...editingItem, slug: e.target.value})}
-                      className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                      placeholder="url-friendly-name"
-                      pattern="[a-z0-9-]+"
-                    />
-                  </div>
                             value={editingItem.icon || ''}
                             onChange={(e) => setEditingItem({ ...editingItem, icon: e.target.value })}
                             className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
@@ -669,6 +681,20 @@ const Admin: React.FC = () => {
                           />
                         </section>
                       )}
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Slug
+                        </label>
+                        <input
+                          type="text"
+                          value={editingItem.slug || ''}
+                          onChange={(e) => setEditingItem({...editingItem, slug: e.target.value})}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                          placeholder="url-friendly-name"
+                          pattern="[a-z0-9-]+"
+                        />
+                      </div>
 
                       {(activeTab === 'tools' || activeTab === 'categories') && (
                         <section>
@@ -727,103 +753,104 @@ const Admin: React.FC = () => {
                             </label>
                           </div>
                         </section>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Image Alt Text
-                      </label>
-                      <input
-                        type="text"
-                        value={editingItem.image_alt || ''}
-                        onChange={(e) => setEditingItem({...editingItem, image_alt: e.target.value})}
-                        className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                        placeholder="Descriptive alt text for the image"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Slug
-                      </label>
-                      <input
-                        type="text"
-                        value={editingItem.slug || ''}
-                        onChange={(e) => setEditingItem({...editingItem, slug: e.target.value})}
-                        className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                        placeholder="url-friendly-name"
-                        pattern="[a-z0-9-]+"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Rating (1-5)
-                      </label>
-                      <input
-                        type="number"
-                        min="1"
-                        max="5"
-                        step="0.1"
-                        value={editingItem.rating || ''}
-                        onChange={(e) => setEditingItem({...editingItem, rating: parseFloat(e.target.value) || null})}
-                        className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                        placeholder="4.5"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Published Date
-                      </label>
-                      <input
-                        type="datetime-local"
-                        value={editingItem.published_at ? new Date(editingItem.published_at).toISOString().slice(0, 16) : ''}
-                        onChange={(e) => setEditingItem({...editingItem, published_at: e.target.value ? new Date(e.target.value).toISOString() : null})}
-                        className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                      />
-                    </div>
-                    <div className="flex items-center">
-                      <label className="flex items-center space-x-2 text-gray-300">
-                        <input
-                          type="checkbox"
-                          checked={editingItem.featured || false}
-                          onChange={(e) => setEditingItem({...editingItem, featured: e.target.checked})}
-                          className="w-4 h-4 text-royal-gold bg-royal-dark border-royal-dark-lighter rounded focus:ring-royal-gold focus:ring-2"
-                        />
-                        <span>Featured Tool</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        SEO Title
-                      </label>
-                      <input
-                        type="text"
-                        value={editingItem.seo_title || ''}
-                        onChange={(e) => setEditingItem({...editingItem, seo_title: e.target.value})}
-                        className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                        placeholder="SEO optimized title (max 60 chars)"
-                        maxLength={60}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        SEO Description
-                      </label>
-                      <textarea
-                        value={editingItem.seo_description || ''}
-                        onChange={(e) => setEditingItem({...editingItem, seo_description: e.target.value})}
-                        className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                        placeholder="SEO optimized description (max 160 chars)"
-                        maxLength={160}
-                        rows={2}
-                      />
-                    </div>
-                  </div>
                       )}
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Image Alt Text
+                          </label>
+                          <input
+                            type="text"
+                            value={editingItem.image_alt || ''}
+                            onChange={(e) => setEditingItem({...editingItem, image_alt: e.target.value})}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="Descriptive alt text for the image"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Slug
+                          </label>
+                          <input
+                            type="text"
+                            value={editingItem.slug || ''}
+                            onChange={(e) => setEditingItem({...editingItem, slug: e.target.value})}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="url-friendly-name"
+                            pattern="[a-z0-9-]+"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Rating (1-5)
+                          </label>
+                          <input
+                            type="number"
+                            min="1"
+                            max="5"
+                            step="0.1"
+                            value={editingItem.rating || ''}
+                            onChange={(e) => setEditingItem({...editingItem, rating: parseFloat(e.target.value) || null})}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="4.5"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Published Date
+                          </label>
+                          <input
+                            type="datetime-local"
+                            value={editingItem.published_at ? new Date(editingItem.published_at).toISOString().slice(0, 16) : ''}
+                            onChange={(e) => setEditingItem({...editingItem, published_at: e.target.value ? new Date(e.target.value).toISOString() : null})}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                          />
+                        </div>
+                        <div className="flex items-center">
+                          <label className="flex items-center space-x-2 text-gray-300">
+                            <input
+                              type="checkbox"
+                              checked={editingItem.featured || false}
+                              onChange={(e) => setEditingItem({...editingItem, featured: e.target.checked})}
+                              className="w-4 h-4 text-royal-gold bg-royal-dark border-royal-dark-lighter rounded focus:ring-royal-gold focus:ring-2"
+                            />
+                            <span>Featured Tool</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            SEO Title
+                          </label>
+                          <input
+                            type="text"
+                            value={editingItem.seo_title || ''}
+                            onChange={(e) => setEditingItem({...editingItem, seo_title: e.target.value})}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="SEO optimized title (max 60 chars)"
+                            maxLength={60}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            SEO Description
+                          </label>
+                          <textarea
+                            value={editingItem.seo_description || ''}
+                            onChange={(e) => setEditingItem({...editingItem, seo_description: e.target.value})}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            placeholder="SEO optimized description (max 160 chars)"
+                            maxLength={160}
+                            rows={2}
+                          />
+                        </div>
+                      </div>
                     </section>
                   </fieldset>
 
@@ -837,6 +864,15 @@ const Admin: React.FC = () => {
                         </label>
                         <textarea
                           value={editingItem.how_to_use || ''}
+                          onChange={(e) => setEditingItem({ ...editingItem, how_to_use: e.target.value })}
+                          rows={6}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                          placeholder="Provide step-by-step instructions on how to use this tool..."
+                        />
+                      </section>
+                    </fieldset>
+                  )}
+
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
                       How to Use This Tool
@@ -849,15 +885,6 @@ const Admin: React.FC = () => {
                       placeholder="Step-by-step instructions on how to use this tool..."
                     />
                   </div>
-
-                          onChange={(e) => setEditingItem({ ...editingItem, how_to_use: e.target.value })}
-                          rows={6}
-                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                          placeholder="Provide step-by-step instructions on how to use this tool..."
-                        />
-                      </section>
-                    </fieldset>
-                  )}
 
                   {/* Content Type Selection */}
                   {activeTab !== 'blog_posts' && (
@@ -895,129 +922,127 @@ const Admin: React.FC = () => {
                     </fieldset>
                   )}
 
-                      {/* Tool-specific fields */}
-                      {activeTab === 'tools' && (
-                        <>
-                          <section>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">
-                              Tool URL *
-                            </label>
-                            <input
-                              type="text"
-                              value={editingItem.url || ''}
-                              onChange={(e) => setEditingItem({ ...editingItem, url: e.target.value })}
-                              className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                              placeholder="https://example.com"
-                              required
-                            />
-                          </section>
-                          <section>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">
-                              Category *
-                            </label>
-                            <select
-                              value={editingItem.category_id || ''}
-                              onChange={(e) => setEditingItem({ ...editingItem, category_id: e.target.value })}
-                              className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                              required
-                            >
-                              <option value="">Select a category</option>
-                              {categories.map((category) => (
-                                <option key={category.id} value={category.id}>
-                                  {category.name}
-                                </option>
-                              ))}
-                            </select>
-                          </section>
-                        </>
-                      )}
+                  {/* Tool-specific fields */}
+                  {activeTab === 'tools' && (
+                    <>
+                      <section>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Tool URL *
+                        </label>
+                        <input
+                          type="text"
+                          value={editingItem.url || ''}
+                          onChange={(e) => setEditingItem({ ...editingItem, url: e.target.value })}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                          placeholder="https://example.com"
+                          required
+                        />
+                      </section>
+                      <section>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Category *
+                        </label>
+                        <select
+                          value={editingItem.category_id || ''}
+                          onChange={(e) => setEditingItem({ ...editingItem, category_id: e.target.value })}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                          required
+                        >
+                          <option value="">Select a category</option>
+                          {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                              {category.name}
+                            </option>
+                          ))}
+                        </select>
+                      </section>
+                    </>
+                  )}
 
-                      {/* Agent-specific fields */}
-                      {activeTab === 'agents' && (
-                        <>
-                          <section>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">
-                              API Endpoint
-                            </label>
-                            <input
-                              type="text"
-                              value={editingItem.api_endpoint || ''}
-                              onChange={(e) => setEditingItem({ ...editingItem, api_endpoint: e.target.value })}
-                              className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                              placeholder="https://api.example.com"
-                            />
-                          </section>
-                          <section>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">
-                              Pricing Type
-                            </label>
-                            <select
-                              value={editingItem.pricing_type || 'free'}
-                              onChange={(e) => setEditingItem({ ...editingItem, pricing_type: e.target.value })}
-                              className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                            >
-                              <option value="free">Free</option>
-                              <option value="freemium">Freemium</option>
-                              <option value="paid">Paid</option>
-                            </select>
-                          </section>
-                          <section>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">
-                              Status
-                            </label>
-                            <select
-                              value={editingItem.status || 'active'}
-                              onChange={(e) => setEditingItem({ ...editingItem, status: e.target.value })}
-                              className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                            >
-                              <option value="active">Active</option>
-                              <option value="inactive">Inactive</option>
-                            </select>
-                          </section>
-                          <section>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">
-                              User Count
-                            </label>
-                            <input
-                              type="number"
-                              value={editingItem.user_count || 0}
-                              onChange={(e) => setEditingItem({ ...editingItem, user_count: parseInt(e.target.value) || 0 })}
-                              className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                            />
-                          </section>
-                          <fieldset className="grid grid-cols-2 gap-4">
-                            <label className="flex items-center space-x-2">
-                              <input
-                                type="checkbox"
-                                checked={editingItem.is_available_24_7 || false}
-                                onChange={(e) => setEditingItem({ ...editingItem, is_available_24_7: e.target.checked })}
-                                className="rounded"
-                              />
-                              <span className="text-gray-300">24/7 Available</span>
-                            </label>
-                            <label className="flex items-center space-x-2">
-                              <input
-                                type="checkbox"
-                                checked={editingItem.has_fast_response || false}
-                                onChange={(e) => setEditingItem({ ...editingItem, has_fast_response: e.target.checked })}
-                                className="rounded"
-                              />
-                              <span className="text-gray-300">Fast Response</span>
-                            </label>
-                            <label className="flex items-center space-x-2">
-                              <input
-                                type="checkbox"
-                                checked={editingItem.is_secure || false}
-                                onChange={(e) => setEditingItem({ ...editingItem, is_secure: e.target.checked })}
-                                className="rounded"
-                              />
-                              <span className="text-gray-300">Secure</span>
-                            </label>
-                          </fieldset>
-                        </>
-                      )}
-                    </section>
-                  </fieldset>
+                  {/* Agent-specific fields */}
+                  {activeTab === 'agents' && (
+                    <>
+                      <section>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          API Endpoint
+                        </label>
+                        <input
+                          type="text"
+                          value={editingItem.api_endpoint || ''}
+                          onChange={(e) => setEditingItem({ ...editingItem, api_endpoint: e.target.value })}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                          placeholder="https://api.example.com"
+                        />
+                      </section>
+                      <section>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Pricing Type
+                        </label>
+                        <select
+                          value={editingItem.pricing_type || 'free'}
+                          onChange={(e) => setEditingItem({ ...editingItem, pricing_type: e.target.value })}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        >
+                          <option value="free">Free</option>
+                          <option value="freemium">Freemium</option>
+                          <option value="paid">Paid</option>
+                        </select>
+                      </section>
+                      <section>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Status
+                        </label>
+                        <select
+                          value={editingItem.status || 'active'}
+                          onChange={(e) => setEditingItem({ ...editingItem, status: e.target.value })}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        >
+                          <option value="active">Active</option>
+                          <option value="inactive">Inactive</option>
+                        </select>
+                      </section>
+                      <section>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          User Count
+                        </label>
+                        <input
+                          type="number"
+                          value={editingItem.user_count || 0}
+                          onChange={(e) => setEditingItem({ ...editingItem, user_count: parseInt(e.target.value) || 0 })}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        />
+                      </section>
+                      <fieldset className="grid grid-cols-2 gap-4">
+                        <label className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={editingItem.is_available_24_7 || false}
+                            onChange={(e) => setEditingItem({ ...editingItem, is_available_24_7: e.target.checked })}
+                            className="rounded"
+                          />
+                          <span className="text-gray-300">24/7 Available</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={editingItem.has_fast_response || false}
+                            onChange={(e) => setEditingItem({ ...editingItem, has_fast_response: e.target.checked })}
+                            className="rounded"
+                          />
+                          <span className="text-gray-300">Fast Response</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={editingItem.is_secure || false}
+                            onChange={(e) => setEditingItem({ ...editingItem, is_secure: e.target.checked })}
+                            className="rounded"
+                          />
+                          <span className="text-gray-300">Secure</span>
+                        </label>
+                      </fieldset>
+                    </>
+                  )}
 
                   {/* SEO Settings */}
                   <fieldset className="border-t border-royal-dark-lighter pt-6">
