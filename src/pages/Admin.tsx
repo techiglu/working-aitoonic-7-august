@@ -2,9 +2,8 @@ import { Plus, Edit, Trash2, Save, X, Sparkles, Upload, Image } from 'lucide-rea
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { AdminLogin } from '../components/AdminLogin';
-import { Plus, Edit, Trash2, Save, X, Sparkles, Bot, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { Plus, Edit, Trash2, Save, X, Sparkles, Bot, LogOut } from 'lucide-react';
 
 interface Category {
   id: string;
