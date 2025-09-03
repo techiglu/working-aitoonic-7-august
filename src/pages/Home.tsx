@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Sparkles, Search, Bot, ArrowRight, Filter, TrendingUp, Calendar, Clock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { testSupabaseConnection } from '../lib/supabase';
 import { Link, useNavigate } from 'react-router-dom';
 import { LazyImage } from '../components/LazyImage';
 
@@ -208,6 +207,7 @@ function Home() {
         setCategoriesWithTools(DEMO_CATEGORIES);
         setFilteredTools(DEMO_CATEGORIES.flatMap(cat => cat.tools).slice(0, 8));
         setAgents([]);
+        setError('Failed to load data, using demo content');
       } finally {
         setLoading(false);
       }
@@ -218,7 +218,13 @@ function Home() {
 
   // Optimized filter function with memoization
   const applyFilter = useCallback((filter: 'today' | 'new' | 'popular') => {
-    if (categoriesWithTools.length === 0) return;
+    if (categoriesWithTools.length === 0) {
+      // Use demo data if no categories loaded
+      const allTools = DEMO_CATEGORIES.flatMap(cat => cat.tools);
+      setFilteredTools(allTools.slice(0, 8));
+      setActiveFilter(filter);
+      return;
+    }
     
     const allTools = categoriesWithTools.flatMap(cat => cat.tools);
     const now = new Date();
@@ -228,10 +234,18 @@ function Home() {
       case 'today':
         const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
         filtered = allTools.filter(tool => new Date(tool.created_at) >= yesterday);
+        // If no tools from today, show recent tools
+        if (filtered.length === 0) {
+          filtered = allTools.slice(0, 8);
+        }
         break;
       case 'new':
         const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
         filtered = allTools.filter(tool => new Date(tool.created_at) >= weekAgo);
+        // If no new tools, show all tools
+        if (filtered.length === 0) {
+          filtered = allTools.slice(0, 8);
+        }
         break;
       case 'popular':
         filtered = [...allTools].sort(() => Math.random() - 0.5);
@@ -249,8 +263,11 @@ function Home() {
     const term = searchTerm.toLowerCase();
     const results: SearchResult[] = [];
 
+    // Use demo data if no categories loaded
+    const dataToSearch = categoriesWithTools.length > 0 ? categoriesWithTools : DEMO_CATEGORIES;
+
     // Search in tools (limit for performance)
-    categoriesWithTools.forEach(category => {
+    dataToSearch.forEach(category => {
       category.tools.slice(0, 5).forEach(tool => {
         if (tool.name.toLowerCase().includes(term)) {
           results.push({ type: 'tool', item: tool });
@@ -266,7 +283,7 @@ function Home() {
     });
 
     // Search in categories
-    categoriesWithTools.forEach(category => {
+    dataToSearch.forEach(category => {
       if (category.name.toLowerCase().includes(term)) {
         results.push({ type: 'category', item: category });
       }
@@ -278,6 +295,15 @@ function Home() {
   useEffect(() => {
     setSearchResults(memoizedSearchResults);
   }, [memoizedSearchResults]);
+
+  // Initialize with demo data immediately
+  useEffect(() => {
+    if (categoriesWithTools.length === 0) {
+      setCategoriesWithTools(DEMO_CATEGORIES);
+      const allDemoTools = DEMO_CATEGORIES.flatMap(cat => cat.tools);
+      setFilteredTools(allDemoTools.slice(0, 8));
+    }
+  }, []);
 
   const handleResultClick = useCallback((result: SearchResult) => {
     setShowResults(false);
@@ -455,12 +481,12 @@ function Home() {
       </header>
 
       {/* Featured Tools - Above the fold */}
-      {filteredTools.length > 0 && (
+      {(filteredTools.length > 0 || DEMO_CATEGORIES.length > 0) && (
         <section className="py-6 bg-royal-dark-lighter">
           <article className="container mx-auto px-4">
             <h2 className="text-2xl font-bold gradient-text mb-4 text-center">Featured Tools</h2>
             <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredTools.slice(0, 8).map((tool, index) => (
+              {(filteredTools.length > 0 ? filteredTools : DEMO_CATEGORIES.flatMap(cat => cat.tools)).slice(0, 8).map((tool, index) => (
                 <li key={tool.id}>
                   <Link
                     to={`/ai/${tool.name.toLowerCase().replace(/\s+/g, '-')}`}
@@ -498,37 +524,11 @@ function Home() {
             </ul>
           </article>
         </section>
-      )}
 
       {/* All Categories with Tools - Ordered by tool count */}
       <section className="py-16 bg-royal-dark">
         <article className="container mx-auto px-4">
-          {/* Debug Information */}
-          {loading && (
-            <div className="text-center mb-8">
-              <div className="text-royal-gold text-xl">🚀 Loading your data...</div>
-            </div>
-          )}
-          
-          {error && (
-            <div className="text-center mb-8">
-              <div className="text-red-400 text-lg">⚠️ {error}</div>
-              <button 
-                onClick={() => window.location.reload()} 
-                className="mt-4 bg-royal-gold text-royal-dark px-6 py-2 rounded-lg font-bold hover:bg-opacity-90"
-              >
-                Retry
-              </button>
-            </div>
-          )}
-          
-          {!loading && !error && categoriesWithTools.length === 0 && (
-            <div className="text-center mb-8">
-              <div className="text-gray-400 text-lg">No categories found</div>
-            </div>
-          )}
-          
-          {categoriesWithTools.map((category, categoryIndex) => (
+          {(categoriesWithTools.length > 0 ? categoriesWithTools : DEMO_CATEGORIES).map((category, categoryIndex) => (
             <section key={category.id} className="mb-20">
               {/* Category Header */}
               <header className="flex items-center justify-between mb-8">
