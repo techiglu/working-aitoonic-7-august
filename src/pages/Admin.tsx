@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { AdminLogin } from '../components/AdminLogin';
 import toast from 'react-hot-toast';
-import { Plus, Edit, Trash2, Save, X, Sparkles, Bot, LogOut } from 'lucide-react';
+import { Plus as PlusIcon, Edit, Trash2, Save, X, Sparkles, Bot, LogOut } from 'lucide-react';
 
 interface Category {
   id: string;
@@ -963,7 +963,7 @@ function Admin() {
                     })}
                     className="flex items-center space-x-1 text-royal-gold hover:text-royal-gold/80"
                   >
-                    <Plus className="w-4 h-4" />
+                    <PlusIcon className="w-4 h-4" />
                     <span>Add Feature</span>
                   </button>
                 </div>
@@ -1026,7 +1026,7 @@ function Admin() {
                     })}
                     className="flex items-center space-x-1 text-royal-gold hover:text-royal-gold/80"
                   >
-                    <Plus className="w-4 h-4" />
+                    <PlusIcon className="w-4 h-4" />
                     <span>Add Plan</span>
                   </button>
                 </div>
