@@ -167,6 +167,41 @@ function Admin() {
     }
   };
 
+  // Image upload handler
+  const handleImageUpload = async (file: File, isEditing: boolean = false) => {
+    setUploadingImage(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `tools/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('images')
+        .getPublicUrl(filePath);
+
+      const imageUrl = data.publicUrl;
+
+      if (isEditing && editingTool) {
+        setEditingTool({ ...editingTool, image_url: imageUrl });
+      } else {
+        setNewTool({ ...newTool, image_url: imageUrl });
+      }
+
+      toast.success('Image uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   // Category CRUD operations
   const handleCreateCategory = async () => {
     if (!newCategory.name.trim()) {
