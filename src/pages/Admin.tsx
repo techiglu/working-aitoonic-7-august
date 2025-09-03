@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { AdminLogin } from '../components/AdminLogin';
 import toast from 'react-hot-toast';
 import { Plus as PlusIcon, Edit as EditIcon, Trash2, Save, X, Sparkles, Bot, LogOut } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface Category {
   id: string;
@@ -586,7 +587,7 @@ function Admin() {
                       onClick={() => handleEditCategory(category)}
                       className="flex items-center space-x-1 text-royal-gold hover:text-royal-gold/80"
                     >
-                      <Edit className="w-4 h-4" />
+                      <EditIcon className="w-4 h-4" />
                       <span>Edit</span>
                     </button>
                     <button
@@ -635,7 +636,7 @@ function Admin() {
                       onClick={() => handleEditTool(tool)}
                       className="flex items-center space-x-1 text-royal-gold hover:text-royal-gold/80"
                     >
-                      <EditIcon className="w-4 h-4" />
+                      <Edit className="w-4 h-4" />
                       <span>Edit</span>
                     </button>
                     <button
