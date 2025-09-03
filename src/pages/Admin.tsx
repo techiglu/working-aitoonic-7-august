@@ -61,12 +61,16 @@ function Admin() {
   // Tools state
   const [tools, setTools] = useState<Tool[]>([]);
   const [editingTool, setEditingTool] = useState<Tool | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [newTool, setNewTool] = useState({
     name: '',
     description: '',
     url: '',
     category_id: '',
-    image_url: ''
+    image_url: '',
+    how_to_use: '',
+    features: [{ title: '', description: '' }],
+    pricing: [{ plan: '', price: '', features: [''] }]
   });
   
   // Agents state
@@ -228,6 +232,43 @@ function Admin() {
     }
   };
 
+  // Image upload function
+  const handleImageUpload = async (file: File, isEditing: boolean = false) => {
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `tools/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('images')
+        .getPublicUrl(filePath);
+
+      const imageUrl = data.publicUrl;
+
+      if (isEditing && editingTool) {
+        setEditingTool({ ...editingTool, image_url: imageUrl });
+      } else {
+        setNewTool({ ...newTool, image_url: imageUrl });
+      }
+
+      toast.success('Image uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   // Tool CRUD operations
   const handleCreateTool = async () => {
     if (!newTool.name.trim() || !newTool.category_id) {
@@ -240,9 +281,9 @@ function Admin() {
         .from('tools')
         .insert([{
           ...newTool,
-          features: [],
+          features: newTool.features.filter(f => f.title.trim()),
           useCases: [],
-          pricing: []
+          pricing: newTool.pricing.filter(p => p.plan.trim())
         }]);
       
       if (error) throw error;
@@ -253,7 +294,10 @@ function Admin() {
         description: '',
         url: '',
         category_id: '',
-        image_url: ''
+        image_url: '',
+        how_to_use: '',
+        features: [{ title: '', description: '' }],
+        pricing: [{ plan: '', price: '', features: [''] }]
       });
       fetchTools();
     } catch (error) {
@@ -273,7 +317,10 @@ function Admin() {
           description: editingTool.description,
           url: editingTool.url,
           category_id: editingTool.category_id,
-          image_url: editingTool.image_url
+          image_url: editingTool.image_url,
+          how_to_use: editingTool.how_to_use,
+          features: editingTool.features,
+          pricing: editingTool.pricing
         })
         .eq('id', editingTool.id);
       
