@@ -84,14 +84,15 @@ function Admin() {
     description: '',
     url: '',
     category_id: '',
-    image_url: '',
-    rating: 0,
+    image_file: null as File | null,
     seo_title: '',
     seo_description: '',
     image_alt: '',
     how_to_use: '',
     content_type: 'human_created',
-    featured: false
+    featured: false,
+    features: [{ title: '', description: '' }],
+    pricing: [{ plan: '', price: '', features: '' }]
   });
 
   const [agentForm, setAgentForm] = useState({
@@ -165,14 +166,15 @@ function Admin() {
       description: '',
       url: '',
       category_id: '',
-      image_url: '',
-      rating: 0,
+      image_file: null,
       seo_title: '',
       seo_description: '',
       image_alt: '',
       how_to_use: '',
       content_type: 'human_created',
-      featured: false
+      featured: false,
+      features: [{ title: '', description: '' }],
+      pricing: [{ plan: '', price: '', features: '' }]
     });
     setEditingTool(null);
     setShowToolForm(false);
@@ -245,13 +247,21 @@ function Admin() {
 
   const handleSaveTool = async () => {
     try {
+      let imageUrl = 'https://images.unsplash.com/photo-1676277791608-ac54783d753b';
+      
+      // Handle image upload (placeholder for now - would need actual upload logic)
+      if (toolForm.image_file) {
+        // In a real implementation, you would upload to Supabase Storage or another service
+        console.log('Image file selected:', toolForm.image_file.name);
+        // For now, use a default image
+      }
+
       const toolData = {
         name: toolForm.name.trim(),
         description: toolForm.description.trim(),
         url: toolForm.url.trim(),
         category_id: toolForm.category_id,
-        image_url: toolForm.image_url.trim() || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b',
-        rating: toolForm.rating || 0,
+        image_url: imageUrl,
         seo_title: toolForm.seo_title.trim() || null,
         seo_description: toolForm.seo_description.trim() || null,
         image_alt: toolForm.image_alt.trim() || toolForm.name.trim(),
@@ -260,16 +270,7 @@ function Admin() {
         featured: toolForm.featured,
         slug: toolForm.name.toLowerCase().replace(/\s+/g, '-'),
         published_at: new Date().toISOString(),
-        features: [
-          {
-            title: "AI-Powered",
-            description: "Advanced artificial intelligence capabilities"
-          },
-          {
-            title: "Easy to Use",
-            description: "User-friendly interface and simple setup"
-          }
-        ],
+        features: toolForm.features.filter(f => f.title.trim() && f.description.trim()),
         useCases: [
           {
             title: "Business Automation",
@@ -280,18 +281,12 @@ function Admin() {
             description: "Boost productivity and efficiency"
           }
         ],
-        pricing: [
-          {
-            plan: "Free",
-            price: "Free",
-            features: ["Basic features", "Limited usage"]
-          },
-          {
-            plan: "Pro",
-            price: "$29/month",
-            features: ["Advanced features", "Unlimited usage", "Priority support"]
-          }
-        ]
+        pricing: toolForm.pricing
+          .filter(p => p.plan.trim() && p.price.trim())
+          .map(p => ({
+            ...p,
+            features: p.features.split('\n').filter(f => f.trim())
+          }))
       };
 
       if (!toolData.name || !toolData.description || !toolData.category_id) {
@@ -467,14 +462,19 @@ function Admin() {
       description: tool.description,
       url: tool.url,
       category_id: tool.category_id,
-      image_url: tool.image_url,
-      rating: tool.rating || 0,
+      image_file: null,
       seo_title: tool.seo_title || '',
       seo_description: tool.seo_description || '',
       image_alt: tool.image_alt || '',
       how_to_use: tool.how_to_use || '',
       content_type: tool.content_type || 'human_created',
-      featured: tool.featured || false
+      featured: tool.featured || false,
+      features: tool.features || [{ title: '', description: '' }],
+      pricing: tool.pricing?.map(p => ({
+        plan: p.plan,
+        price: p.price,
+        features: p.features.join('\n')
+      })) || [{ plan: '', price: '', features: '' }]
     });
     setEditingTool(tool);
     setShowToolForm(true);
@@ -867,33 +867,23 @@ function Admin() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Image URL
+                      Upload Image
                     </label>
                     <input
-                      type="url"
-                      value={toolForm.image_url}
-                      onChange={(e) => setToolForm({ ...toolForm, image_url: e.target.value })}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setToolForm({ ...toolForm, image_file: e.target.files?.[0] || null })}
                       className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                      placeholder="https://example.com/image.jpg"
                     />
+                    {toolForm.image_file && (
+                      <p className="text-sm text-gray-400 mt-1">
+                        Selected: {toolForm.image_file.name}
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Rating (0-5)
-                    </label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="5"
-                      step="0.1"
-                      value={toolForm.rating}
-                      onChange={(e) => setToolForm({ ...toolForm, rating: parseFloat(e.target.value) || 0 })}
-                      className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                    />
-                  </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -961,6 +951,142 @@ function Admin() {
                 </div>
               </div>
 
+              {/* Features Section */}
+              <div className="mt-8">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-lg font-bold text-white">Features</h4>
+                  <button
+                    type="button"
+                    onClick={() => setToolForm({
+                      ...toolForm,
+                      features: [...toolForm.features, { title: '', description: '' }]
+                    })}
+                    className="flex items-center space-x-1 text-royal-gold hover:text-royal-gold/80"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add Feature</span>
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {toolForm.features.map((feature, index) => (
+                    <div key={index} className="bg-royal-dark rounded-lg p-4 border border-royal-dark-lighter">
+                      <div className="flex items-start justify-between mb-3">
+                        <span className="text-sm text-gray-400">Feature {index + 1}</span>
+                        {toolForm.features.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => setToolForm({
+                              ...toolForm,
+                              features: toolForm.features.filter((_, i) => i !== index)
+                            })}
+                            className="text-red-500 hover:text-red-400"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                      <div className="space-y-3">
+                        <input
+                          type="text"
+                          placeholder="Feature title"
+                          value={feature.title}
+                          onChange={(e) => {
+                            const newFeatures = [...toolForm.features];
+                            newFeatures[index].title = e.target.value;
+                            setToolForm({ ...toolForm, features: newFeatures });
+                          }}
+                          className="w-full px-3 py-2 bg-royal-dark-card border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        />
+                        <textarea
+                          placeholder="Feature description"
+                          value={feature.description}
+                          onChange={(e) => {
+                            const newFeatures = [...toolForm.features];
+                            newFeatures[index].description = e.target.value;
+                            setToolForm({ ...toolForm, features: newFeatures });
+                          }}
+                          rows={2}
+                          className="w-full px-3 py-2 bg-royal-dark-card border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Pricing Plans Section */}
+              <div className="mt-8">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-lg font-bold text-white">Pricing Plans</h4>
+                  <button
+                    type="button"
+                    onClick={() => setToolForm({
+                      ...toolForm,
+                      pricing: [...toolForm.pricing, { plan: '', price: '', features: '' }]
+                    })}
+                    className="flex items-center space-x-1 text-royal-gold hover:text-royal-gold/80"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add Plan</span>
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {toolForm.pricing.map((plan, index) => (
+                    <div key={index} className="bg-royal-dark rounded-lg p-4 border border-royal-dark-lighter">
+                      <div className="flex items-start justify-between mb-3">
+                        <span className="text-sm text-gray-400">Plan {index + 1}</span>
+                        {toolForm.pricing.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => setToolForm({
+                              ...toolForm,
+                              pricing: toolForm.pricing.filter((_, i) => i !== index)
+                            })}
+                            className="text-red-500 hover:text-red-400"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                        <input
+                          type="text"
+                          placeholder="Plan name"
+                          value={plan.plan}
+                          onChange={(e) => {
+                            const newPricing = [...toolForm.pricing];
+                            newPricing[index].plan = e.target.value;
+                            setToolForm({ ...toolForm, pricing: newPricing });
+                          }}
+                          className="w-full px-3 py-2 bg-royal-dark-card border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Price"
+                          value={plan.price}
+                          onChange={(e) => {
+                            const newPricing = [...toolForm.pricing];
+                            newPricing[index].price = e.target.value;
+                            setToolForm({ ...toolForm, pricing: newPricing });
+                          }}
+                          className="w-full px-3 py-2 bg-royal-dark-card border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        />
+                      </div>
+                      <textarea
+                        placeholder="Features (one per line)"
+                        value={plan.features}
+                        onChange={(e) => {
+                          const newPricing = [...toolForm.pricing];
+                          newPricing[index].features = e.target.value;
+                          setToolForm({ ...toolForm, pricing: newPricing });
+                        }}
+                        rows={3}
+                        className="w-full px-3 py-2 bg-royal-dark-card border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
               <div className="flex space-x-4 mt-6">
                 <button
                   onClick={resetToolForm}
