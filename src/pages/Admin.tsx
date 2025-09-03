@@ -279,8 +279,17 @@ function Admin() {
         .from('tools')
         .insert([{
           ...newTool,
+      // Transform pricing features from string to array
+      const transformedPricing = newTool.pricing.map(plan => ({
+        ...plan,
+        features: plan.features.split('\n').filter(f => f.trim())
+      }));
+
           features: newTool.features.filter(f => f.title.trim()),
           pricing: newTool.pricing.filter(p => p.plan.trim())
+        .insert([{
+          ...newTool,
+          pricing: transformedPricing
         }]);
       
       if (error) throw error;
@@ -291,6 +300,10 @@ function Admin() {
         description: '',
         url: '',
         category_id: '',
+        how_to_use: '',
+        image_url: '',
+        features: [],
+        pricing: []
         image_url: '',
         how_to_use: '',
         features: [{ title: '', description: '' }],
@@ -305,6 +318,14 @@ function Admin() {
 
   const handleUpdateTool = async () => {
     if (!editingTool) return;
+      // Transform pricing features from string to array
+      const transformedPricing = editingTool.pricing.map((plan: any) => ({
+        ...plan,
+        features: typeof plan.features === 'string' 
+          ? plan.features.split('\n').filter((f: string) => f.trim())
+          : plan.features
+      }));
+
 
     try {
       const { error } = await supabase
@@ -314,6 +335,10 @@ function Admin() {
           description: editingTool.description,
           url: editingTool.url,
           category_id: editingTool.category_id,
+          how_to_use: editingTool.how_to_use,
+          image_url: editingTool.image_url,
+          features: editingTool.features,
+          pricing: transformedPricing
           image_url: editingTool.image_url,
           how_to_use: editingTool.how_to_use,
           features: editingTool.features,
