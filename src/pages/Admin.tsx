@@ -558,35 +558,31 @@ function Admin() {
             {/* Add New Tool */}
             <div className="bg-royal-dark-card rounded-xl p-6 border border-royal-dark-lighter">
               <h2 className="text-xl font-bold mb-4">Add New Tool</h2>
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    placeholder="Tool Name"
-                    value={newTool.name}
-                    onChange={(e) => setNewTool({ ...newTool, name: e.target.value })}
-                    className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                  />
-                  <select
-                    value={newTool.category_id}
-                    onChange={(e) => setNewTool({ ...newTool, category_id: e.target.value })}
-                    className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map(category => (
-                      <option key={category.id} value={category.id}>{category.name}</option>
-                    ))}
-                  </select>
-                </div>
-                
-                <textarea
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <input
+                  type="text"
+                  placeholder="Tool Name"
+                  value={newTool.name}
+                  onChange={(e) => setNewTool({ ...newTool, name: e.target.value })}
+                  className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                />
+                <select
+                  value={newTool.category_id}
+                  onChange={(e) => setNewTool({ ...newTool, category_id: e.target.value })}
+                  className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                >
+                  <option value="">Select Category</option>
+                  {categories.map(category => (
+                    <option key={category.id} value={category.id}>{category.name}</option>
+                  ))}
+                </select>
+                <input
+                  type="text"
                   placeholder="Description"
                   value={newTool.description}
                   onChange={(e) => setNewTool({ ...newTool, description: e.target.value })}
-                  rows={3}
-                  className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold resize"
+                  className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                 />
-                
                 <input
                   type="url"
                   placeholder="Tool URL"
@@ -594,188 +590,13 @@ function Admin() {
                   onChange={(e) => setNewTool({ ...newTool, url: e.target.value })}
                   className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                 />
-                
-                <textarea
-                  placeholder="How to Use (step-by-step instructions)"
-                  value={newTool.how_to_use}
-                  onChange={(e) => setNewTool({ ...newTool, how_to_use: e.target.value })}
-                  rows={4}
-                  className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold resize"
+                <input
+                  type="url"
+                  placeholder="Image URL"
+                  value={newTool.image_url}
+                  onChange={(e) => setNewTool({ ...newTool, image_url: e.target.value })}
+                  className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold md:col-span-2"
                 />
-
-                {/* Image Upload Section */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Tool Image</label>
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-4">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleImageUpload(file, false);
-                        }}
-                        className="hidden"
-                        id="image-upload-new"
-                      />
-                      <label
-                        htmlFor="image-upload-new"
-                        className={`px-4 py-2 bg-royal-gold text-royal-dark rounded-lg font-bold cursor-pointer hover:bg-opacity-90 transition-all ${uploadingImage ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        {uploadingImage ? 'Uploading...' : 'Upload from PC'}
-                      </label>
-                      <span className="text-gray-400">or</span>
-                    </div>
-                    <input
-                      type="url"
-                      placeholder="Image URL"
-                      value={newTool.image_url}
-                      onChange={(e) => setNewTool({ ...newTool, image_url: e.target.value })}
-                      className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                    />
-                    {newTool.image_url && (
-                      <img
-                        src={newTool.image_url}
-                        alt="Preview"
-                        className="w-20 h-20 object-cover rounded-lg"
-                      />
-                    )}
-                  </div>
-                </div>
-
-                {/* Features Section */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Features</label>
-                  {newTool.features.map((feature, index) => (
-                    <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
-                      <input
-                        type="text"
-                        placeholder="Feature Title"
-                        value={feature.title}
-                        onChange={(e) => {
-                          const updated = [...newTool.features];
-                          updated[index] = { ...updated[index], title: e.target.value };
-                          setNewTool({ ...newTool, features: updated });
-                        }}
-                        className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                      />
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="text"
-                          placeholder="Feature Description"
-                          value={feature.description}
-                          onChange={(e) => {
-                            const updated = [...newTool.features];
-                            updated[index] = { ...updated[index], description: e.target.value };
-                            setNewTool({ ...newTool, features: updated });
-                          }}
-                          className="flex-1 px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                        />
-                        <button
-                          onClick={() => {
-                            const updated = newTool.features.filter((_, i) => i !== index);
-                            setNewTool({ ...newTool, features: updated });
-                          }}
-                          className="p-2 text-red-500 hover:bg-royal-dark rounded-lg"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                  <button
-                    onClick={() => setNewTool({ ...newTool, features: [...newTool.features, { title: '', description: '' }] })}
-                    className="text-royal-gold hover:text-royal-gold/80 text-sm"
-                  >
-                    + Add Feature
-                  </button>
-                </div>
-
-                {/* Pricing Section */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Pricing Plans</label>
-                  {newTool.pricing.map((plan, index) => (
-                    <div key={index} className="space-y-2 mb-4 p-4 bg-royal-dark rounded-lg border border-royal-dark-lighter">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <input
-                          type="text"
-                          placeholder="Plan Name (e.g., Free, Pro)"
-                          value={plan.plan}
-                          onChange={(e) => {
-                            const updated = [...newTool.pricing];
-                            updated[index] = { ...updated[index], plan: e.target.value };
-                            setNewTool({ ...newTool, pricing: updated });
-                          }}
-                          className="px-4 py-2 bg-royal-dark-card border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                        />
-                        <input
-                          type="text"
-                          placeholder="Price (e.g., $0, $20/month)"
-                          value={plan.price}
-                          onChange={(e) => {
-                            const updated = [...newTool.pricing];
-                            updated[index] = { ...updated[index], price: e.target.value };
-                            setNewTool({ ...newTool, pricing: updated });
-                          }}
-                          className="px-4 py-2 bg-royal-dark-card border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs text-gray-400 mb-1">Plan Features</label>
-                        {plan.features.map((planFeature, featureIndex) => (
-                          <div key={featureIndex} className="flex items-center space-x-2 mb-1">
-                            <input
-                              type="text"
-                              placeholder="Plan feature"
-                              value={planFeature}
-                              onChange={(e) => {
-                                const updated = [...newTool.pricing];
-                                updated[index].features[featureIndex] = e.target.value;
-                                setNewTool({ ...newTool, pricing: updated });
-                              }}
-                              className="flex-1 px-3 py-1 bg-royal-dark-card border border-royal-dark-lighter rounded text-white text-sm focus:outline-none focus:border-royal-gold"
-                            />
-                            <button
-                              onClick={() => {
-                                const updated = [...newTool.pricing];
-                                updated[index].features = updated[index].features.filter((_, i) => i !== featureIndex);
-                                setNewTool({ ...newTool, pricing: updated });
-                              }}
-                              className="p-1 text-red-500 hover:bg-royal-dark-card rounded"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                          </div>
-                        ))}
-                        <button
-                          onClick={() => {
-                            const updated = [...newTool.pricing];
-                            updated[index].features.push('');
-                            setNewTool({ ...newTool, pricing: updated });
-                          }}
-                          className="text-royal-gold hover:text-royal-gold/80 text-xs"
-                        >
-                          + Add Plan Feature
-                        </button>
-                      </div>
-                      <button
-                        onClick={() => {
-                          const updated = newTool.pricing.filter((_, i) => i !== index);
-                          setNewTool({ ...newTool, pricing: updated });
-                        }}
-                        className="text-red-500 hover:text-red-400 text-sm"
-                      >
-                        Remove Plan
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    onClick={() => setNewTool({ ...newTool, pricing: [...newTool.pricing, { plan: '', price: '', features: [''] }] })}
-                    className="text-royal-gold hover:text-royal-gold/80 text-sm"
-                  >
-                    + Add Pricing Plan
-                  </button>
-                </div>
               </div>
               <button
                 onClick={handleCreateTool}
@@ -795,7 +616,7 @@ function Admin() {
                 {tools.map((tool) => (
                   <div key={tool.id} className="p-6">
                     {editingTool?.id === tool.id ? (
-                      <div className="space-y-4">
+                      <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <input
                             type="text"
@@ -812,25 +633,172 @@ function Admin() {
                               <option key={category.id} value={category.id}>{category.name}</option>
                             ))}
                           </select>
-                          <input
-                            type="text"
-                            value={editingTool.description}
-                            onChange={(e) => setEditingTool({ ...editingTool, description: e.target.value })}
-                            className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                          />
-                          <input
-                            type="url"
-                            value={editingTool.url}
-                            onChange={(e) => setEditingTool({ ...editingTool, url: e.target.value })}
-                            className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
-                          />
-                          <input
-                            type="url"
-                            value={editingTool.image_url}
-                            onChange={(e) => setEditingTool({ ...editingTool, image_url: e.target.value })}
-                            className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold md:col-span-2"
-                          />
                         </div>
+                        
+                        <textarea
+                          value={editingTool.description}
+                          onChange={(e) => setEditingTool({ ...editingTool, description: e.target.value })}
+                          rows={3}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold resize"
+                        />
+                        
+                        <input
+                          type="url"
+                          value={editingTool.url}
+                          onChange={(e) => setEditingTool({ ...editingTool, url: e.target.value })}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                        />
+                        
+                        <textarea
+                          placeholder="How to Use"
+                          value={editingTool.how_to_use || ''}
+                          onChange={(e) => setEditingTool({ ...editingTool, how_to_use: e.target.value })}
+                          rows={4}
+                          className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold resize"
+                        />
+
+                        {/* Image Upload for Editing */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">Tool Image</label>
+                          <div className="space-y-4">
+                            <div className="flex items-center space-x-4">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) handleImageUpload(file, true);
+                                }}
+                                className="hidden"
+                                id={`image-upload-edit-${editingTool.id}`}
+                              />
+                              <label
+                                htmlFor={`image-upload-edit-${editingTool.id}`}
+                                className={`px-4 py-2 bg-royal-gold text-royal-dark rounded-lg font-bold cursor-pointer hover:bg-opacity-90 transition-all ${uploadingImage ? 'opacity-50 cursor-not-allowed' : ''}`}
+                              >
+                                {uploadingImage ? 'Uploading...' : 'Upload from PC'}
+                              </label>
+                              <span className="text-gray-400">or</span>
+                            </div>
+                            <input
+                              type="url"
+                              placeholder="Image URL"
+                              value={editingTool.image_url}
+                              onChange={(e) => setEditingTool({ ...editingTool, image_url: e.target.value })}
+                              className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            />
+                            {editingTool.image_url && (
+                              <img
+                                src={editingTool.image_url}
+                                alt="Preview"
+                                className="w-20 h-20 object-cover rounded-lg"
+                              />
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Features Section for Editing */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">Features</label>
+                          {(editingTool.features || []).map((feature: any, index: number) => (
+                            <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+                              <input
+                                type="text"
+                                placeholder="Feature Title"
+                                value={feature.title || ''}
+                                onChange={(e) => {
+                                  const updated = [...(editingTool.features || [])];
+                                  updated[index] = { ...updated[index], title: e.target.value };
+                                  setEditingTool({ ...editingTool, features: updated });
+                                }}
+                                className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                              />
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="text"
+                                  placeholder="Feature Description"
+                                  value={feature.description || ''}
+                                  onChange={(e) => {
+                                    const updated = [...(editingTool.features || [])];
+                                    updated[index] = { ...updated[index], description: e.target.value };
+                                    setEditingTool({ ...editingTool, features: updated });
+                                  }}
+                                  className="flex-1 px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                                />
+                                <button
+                                  onClick={() => {
+                                    const updated = (editingTool.features || []).filter((_, i) => i !== index);
+                                    setEditingTool({ ...editingTool, features: updated });
+                                  }}
+                                  className="p-2 text-red-500 hover:bg-royal-dark rounded-lg"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                          <button
+                            onClick={() => setEditingTool({ 
+                              ...editingTool, 
+                              features: [...(editingTool.features || []), { title: '', description: '' }] 
+                            })}
+                            className="text-royal-gold hover:text-royal-gold/80 text-sm"
+                          >
+                            + Add Feature
+                          </button>
+                        </div>
+
+                        {/* Pricing Section for Editing */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">Pricing Plans</label>
+                          {(editingTool.pricing || []).map((plan: any, index: number) => (
+                            <div key={index} className="space-y-2 mb-4 p-4 bg-royal-dark rounded-lg border border-royal-dark-lighter">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <input
+                                  type="text"
+                                  placeholder="Plan Name"
+                                  value={plan.plan || ''}
+                                  onChange={(e) => {
+                                    const updated = [...(editingTool.pricing || [])];
+                                    updated[index] = { ...updated[index], plan: e.target.value };
+                                    setEditingTool({ ...editingTool, pricing: updated });
+                                  }}
+                                  className="px-4 py-2 bg-royal-dark-card border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                                />
+                                <input
+                                  type="text"
+                                  placeholder="Price"
+                                  value={plan.price || ''}
+                                  onChange={(e) => {
+                                    const updated = [...(editingTool.pricing || [])];
+                                    updated[index] = { ...updated[index], price: e.target.value };
+                                    setEditingTool({ ...editingTool, pricing: updated });
+                                  }}
+                                  className="px-4 py-2 bg-royal-dark-card border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                                />
+                              </div>
+                              <button
+                                onClick={() => {
+                                  const updated = (editingTool.pricing || []).filter((_, i) => i !== index);
+                                  setEditingTool({ ...editingTool, pricing: updated });
+                                }}
+                                className="text-red-500 hover:text-red-400 text-sm"
+                              >
+                                Remove Plan
+                              </button>
+                            </div>
+                          ))}
+                          <button
+                            onClick={() => setEditingTool({ 
+                              ...editingTool, 
+                              pricing: [...(editingTool.pricing || []), { plan: '', price: '', features: [''] }] 
+                            })}
+                            className="text-royal-gold hover:text-royal-gold/80 text-sm"
+                          >
+                            + Add Pricing Plan
+                          </button>
+                        </div>
+                        
                         <div className="flex space-x-2">
                           <button
                             onClick={handleUpdateTool}
@@ -864,6 +832,9 @@ function Admin() {
                             <p className="text-sm text-royal-gold">
                               {categories.find(c => c.id === tool.category_id)?.name}
                             </p>
+                            {tool.how_to_use && (
+                              <p className="text-xs text-gray-500 mt-1">Has usage instructions</p>
+                            )}
                           </div>
                         </div>
                         <div className="flex space-x-2">
