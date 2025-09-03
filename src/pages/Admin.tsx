@@ -70,7 +70,7 @@ function Admin() {
     image_url: '',
     how_to_use: '',
     features: [{ title: '', description: '' }],
-    pricing: [{ plan: '', price: '', features: [''] }]
+    pricing: [{ plan: '', price: '', features: '' }]
   });
   
   // Agents state
@@ -175,7 +175,7 @@ function Admin() {
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `tools/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from('images')
         .upload(filePath, file);
 
@@ -196,7 +196,7 @@ function Admin() {
       toast.success('Image uploaded successfully');
     } catch (error) {
       console.error('Error uploading image:', error);
-      toast.error('Failed to upload image');
+      toast.error(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setUploadingImage(false);
     }
@@ -280,7 +280,6 @@ function Admin() {
         .insert([{
           ...newTool,
           features: newTool.features.filter(f => f.title.trim()),
-          useCases: [],
           pricing: newTool.pricing.filter(p => p.plan.trim())
         }]);
       
@@ -295,7 +294,7 @@ function Admin() {
         image_url: '',
         how_to_use: '',
         features: [{ title: '', description: '' }],
-        pricing: [{ plan: '', price: '', features: [''] }]
+        pricing: [{ plan: '', price: '', features: '' }]
       });
       fetchTools();
     } catch (error) {
@@ -684,6 +683,182 @@ function Admin() {
                           className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
                         />
                         
+                        {/* How to Use Section */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">How to Use</label>
+                          <textarea
+                            placeholder="Step-by-step instructions on how to use this tool..."
+                            value={newTool.how_to_use}
+                            onChange={(e) => setNewTool({ ...newTool, how_to_use: e.target.value })}
+                            rows={4}
+                            className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold resize"
+                          />
+                        </div>
+
+                        {/* Image Upload Section */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">Tool Image</label>
+                          <div className="space-y-4">
+                            <div className="flex items-center space-x-4">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) handleImageUpload(file, false);
+                                }}
+                                className="hidden"
+                                id="image-upload-new"
+                              />
+                              <label
+                                htmlFor="image-upload-new"
+                                className={`px-4 py-2 bg-royal-gold text-royal-dark rounded-lg font-bold cursor-pointer hover:bg-opacity-90 transition-all ${uploadingImage ? 'opacity-50 cursor-not-allowed' : ''}`}
+                              >
+                                {uploadingImage ? 'Uploading...' : 'Upload from PC'}
+                              </label>
+                              <span className="text-gray-400">or</span>
+                            </div>
+                            <input
+                              type="url"
+                              placeholder="Image URL"
+                              value={newTool.image_url}
+                              onChange={(e) => setNewTool({ ...newTool, image_url: e.target.value })}
+                              className="w-full px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                            />
+                            {newTool.image_url && (
+                              <img
+                                src={newTool.image_url}
+                                alt="Preview"
+                                className="w-20 h-20 object-cover rounded-lg"
+                                onError={(e) => {
+                                  console.log('Image failed to load:', newTool.image_url);
+                                  e.currentTarget.style.display = 'none';
+                                }}
+                              />
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Features Section */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">Features</label>
+                          {newTool.features.map((feature, index) => (
+                            <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+                              <input
+                                type="text"
+                                placeholder="Feature Title"
+                                value={feature.title}
+                                onChange={(e) => {
+                                  const updated = [...newTool.features];
+                                  updated[index] = { ...updated[index], title: e.target.value };
+                                  setNewTool({ ...newTool, features: updated });
+                                }}
+                                className="px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                              />
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="text"
+                                  placeholder="Feature Description"
+                                  value={feature.description}
+                                  onChange={(e) => {
+                                    const updated = [...newTool.features];
+                                    updated[index] = { ...updated[index], description: e.target.value };
+                                    setNewTool({ ...newTool, features: updated });
+                                  }}
+                                  className="flex-1 px-4 py-2 bg-royal-dark border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = newTool.features.filter((_, i) => i !== index);
+                                    setNewTool({ ...newTool, features: updated });
+                                  }}
+                                  className="p-2 text-red-500 hover:bg-royal-dark rounded-lg"
+                                >
+                                  <CloseIcon className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => setNewTool({ 
+                              ...newTool, 
+                              features: [...newTool.features, { title: '', description: '' }] 
+                            })}
+                            className="text-royal-gold hover:text-royal-gold/80 text-sm"
+                          >
+                            + Add Feature
+                          </button>
+                        </div>
+
+                        {/* Pricing Section */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">Pricing Plans</label>
+                          {newTool.pricing.map((plan, index) => (
+                            <div key={index} className="space-y-2 mb-4 p-4 bg-royal-dark rounded-lg border border-royal-dark-lighter">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-white font-medium">Plan {index + 1}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = newTool.pricing.filter((_, i) => i !== index);
+                                    setNewTool({ ...newTool, pricing: updated });
+                                  }}
+                                  className="p-1 text-red-500 hover:bg-royal-dark-lighter rounded"
+                                >
+                                  <CloseIcon className="w-4 h-4" />
+                                </button>
+                              </div>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <input
+                                  type="text"
+                                  placeholder="Plan name"
+                                  value={plan.plan}
+                                  onChange={(e) => {
+                                    const updated = [...newTool.pricing];
+                                    updated[index] = { ...updated[index], plan: e.target.value };
+                                    setNewTool({ ...newTool, pricing: updated });
+                                  }}
+                                  className="px-4 py-2 bg-royal-dark-card border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                                />
+                                <input
+                                  type="text"
+                                  placeholder="Price"
+                                  value={plan.price}
+                                  onChange={(e) => {
+                                    const updated = [...newTool.pricing];
+                                    updated[index] = { ...updated[index], price: e.target.value };
+                                    setNewTool({ ...newTool, pricing: updated });
+                                  }}
+                                  className="px-4 py-2 bg-royal-dark-card border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold"
+                                />
+                              </div>
+                              <textarea
+                                placeholder="Features (one per line)"
+                                value={plan.features}
+                                onChange={(e) => {
+                                  const updated = [...newTool.pricing];
+                                  updated[index] = { ...updated[index], features: e.target.value };
+                                  setNewTool({ ...newTool, pricing: updated });
+                                }}
+                                rows={4}
+                                className="w-full px-4 py-2 bg-royal-dark-card border border-royal-dark-lighter rounded-lg text-white focus:outline-none focus:border-royal-gold resize"
+                              />
+                            </div>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => setNewTool({ 
+                              ...newTool, 
+                              pricing: [...newTool.pricing, { plan: '', price: '', features: '' }] 
+                            })}
+                            className="text-royal-gold hover:text-royal-gold/80 text-sm"
+                          >
+                            + Add Pricing Plan
+                          </button>
+                        </div>
+
                         <textarea
                           placeholder="How to Use"
                           value={editingTool.how_to_use || ''}
