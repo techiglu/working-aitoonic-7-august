@@ -82,7 +82,7 @@ export function LazyImage({
       {/* Main image */}
       {(isInView || priority) && (
         <img
-          src={error ? placeholder : src}
+          src={error ? 'https://images.unsplash.com/photo-1676277791608-ac54783d753b?auto=format&fit=crop&q=80&w=400' : src}
           alt={alt}
           width={width}
           height={height}

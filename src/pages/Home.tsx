@@ -567,7 +567,7 @@ function Home() {
                         {/* Tool Image */}
                         <figure className="aspect-square relative overflow-hidden">
                           <LazyImage
-                            src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b'}
+                            src={tool.image_url || 'https://images.unsplash.com/photo-1676277791608-ac54783d753b?auto=format&fit=crop&q=80&w=400'}
                             alt={tool.name}
                             width={400}
                             height={400}

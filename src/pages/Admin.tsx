@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Plus, Edit, Trash2, Save, X, Sparkles, Upload, Image } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { AdminLogin } from '../components/AdminLogin';
 import { Plus, Edit, Trash2, Save, X, Sparkles, Bot, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 
 interface Category {
   id: string;
@@ -111,46 +111,6 @@ function Admin() {
     seo_title: '',
     seo_description: ''
   });
-
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const addFeature = () => {
-    setToolFeatures([...toolFeatures, { title: '', description: '' }]);
-  };
-
-  const removeFeature = (index: number) => {
-    setToolFeatures(toolFeatures.filter((_, i) => i !== index));
-  };
-
-  const updateFeature = (index: number, field: 'title' | 'description', value: string) => {
-    const updated = [...toolFeatures];
-    updated[index][field] = value;
-    setToolFeatures(updated);
-  };
-
-  const addPricingPlan = () => {
-    setToolPricing([...toolPricing, { plan: '', price: '', features: '' }]);
-  };
-
-  const removePricingPlan = (index: number) => {
-    setToolPricing(toolPricing.filter((_, i) => i !== index));
-  };
-
-  const updatePricingPlan = (index: number, field: 'plan' | 'price' | 'features', value: string) => {
-    const updated = [...toolPricing];
-    updated[index][field] = value;
-    setToolPricing(updated);
-  };
 
   const fetchData = useCallback(async () => {
     if (!session) return;
