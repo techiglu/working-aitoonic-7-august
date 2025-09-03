@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { AdminLogin } from '../components/AdminLogin';
 import toast from 'react-hot-toast';
-import { Plus as PlusIcon, Edit, Trash2, Save, X, Sparkles, Bot, LogOut } from 'lucide-react';
+import { Plus as PlusIcon, Edit as EditIcon, Trash2, Save, X, Sparkles, Bot, LogOut } from 'lucide-react';
 
 interface Category {
   id: string;
