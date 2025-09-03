@@ -524,6 +524,7 @@ function Home() {
             </ul>
           </article>
         </section>
+      )}
 
       {/* All Categories with Tools - Ordered by tool count */}
       <section className="py-16 bg-royal-dark">
