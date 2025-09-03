@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { Plus, Edit, Trash2, Save, X, Sparkles, Upload, Image } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { AdminLogin } from '../components/AdminLogin';
@@ -1305,6 +1305,6 @@ function Admin() {
       </div>
     </div>
   );
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 }
-
 export default Admin;
