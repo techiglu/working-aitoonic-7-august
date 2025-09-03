@@ -296,15 +296,6 @@ function Home() {
     setSearchResults(memoizedSearchResults);
   }, [memoizedSearchResults]);
 
-  // Initialize with demo data immediately
-  useEffect(() => {
-    if (categoriesWithTools.length === 0) {
-      setCategoriesWithTools(DEMO_CATEGORIES);
-      const allDemoTools = DEMO_CATEGORIES.flatMap(cat => cat.tools);
-      setFilteredTools(allDemoTools.slice(0, 8));
-    }
-  }, []);
-
   const handleResultClick = useCallback((result: SearchResult) => {
     setShowResults(false);
     setSearchTerm('');
