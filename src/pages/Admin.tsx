@@ -279,17 +279,8 @@ function Admin() {
         .from('tools')
         .insert([{
           ...newTool,
-      // Transform pricing features from string to array
-      const transformedPricing = newTool.pricing.map(plan => ({
-        ...plan,
-        features: plan.features.split('\n').filter(f => f.trim())
-      }));
-
           features: newTool.features.filter(f => f.title.trim()),
           pricing: newTool.pricing.filter(p => p.plan.trim())
-        .insert([{
-          ...newTool,
-          pricing: transformedPricing
         }]);
       
       if (error) throw error;
@@ -300,10 +291,6 @@ function Admin() {
         description: '',
         url: '',
         category_id: '',
-        how_to_use: '',
-        image_url: '',
-        features: [],
-        pricing: []
         image_url: '',
         how_to_use: '',
         features: [{ title: '', description: '' }],
@@ -318,14 +305,6 @@ function Admin() {
 
   const handleUpdateTool = async () => {
     if (!editingTool) return;
-      // Transform pricing features from string to array
-      const transformedPricing = editingTool.pricing.map((plan: any) => ({
-        ...plan,
-        features: typeof plan.features === 'string' 
-          ? plan.features.split('\n').filter((f: string) => f.trim())
-          : plan.features
-      }));
-
 
     try {
       const { error } = await supabase
@@ -335,10 +314,6 @@ function Admin() {
           description: editingTool.description,
           url: editingTool.url,
           category_id: editingTool.category_id,
-          how_to_use: editingTool.how_to_use,
-          image_url: editingTool.image_url,
-          features: editingTool.features,
-          pricing: transformedPricing
           image_url: editingTool.image_url,
           how_to_use: editingTool.how_to_use,
           features: editingTool.features,
@@ -346,14 +321,136 @@ function Admin() {
         })
         .eq('id', editingTool.id);
       
-      if (error) throw error;
+  const handleImageUpload = async (file: File, isEditing: boolean = false) => {
+    try {
+      setUploadingImage(true);
       
+      // Create unique filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `tools/${fileName}`;
+
+      // Upload file to Supabase storage
+      const { data, error } = await supabase.storage
+        .from('images')
+        .upload(filePath, file);
+      if (error) throw error;
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('images')
+        .getPublicUrl(filePath);
       toast.success('Tool updated successfully');
+      // Update appropriate state
+      if (isEditing) {
+        setEditingTool(prev => ({ ...prev, image_url: publicUrl }));
+      } else {
+        setNewTool(prev => ({ ...prev, image_url: publicUrl }));
+      }
       setEditingTool(null);
-      fetchTools();
+      toast.success('Image uploaded successfully!');
     } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+      fetchTools();
+  const addFeature = (isEditing: boolean = false) => {
+    const newFeature = { title: '', description: '' };
+    if (isEditing) {
+      setEditingTool(prev => ({
+        ...prev,
+        features: [...(prev.features || []), newFeature]
+      }));
+    } else {
+      setNewTool(prev => ({
+        ...prev,
+        features: [...prev.features, newFeature]
+      }));
+    }
+  };
+    } catch (error) {
+  const removeFeature = (index: number, isEditing: boolean = false) => {
+    if (isEditing) {
+      setEditingTool(prev => ({
+        ...prev,
+        features: prev.features.filter((_: any, i: number) => i !== index)
+      }));
+    } else {
+      setNewTool(prev => ({
+        ...prev,
+        features: prev.features.filter((_, i) => i !== index)
+      }));
+    }
+  };
       console.error('Error updating tool:', error);
+  const updateFeature = (index: number, field: 'title' | 'description', value: string, isEditing: boolean = false) => {
+    if (isEditing) {
+      setEditingTool(prev => ({
+        ...prev,
+        features: prev.features.map((feature: any, i: number) => 
+          i === index ? { ...feature, [field]: value } : feature
+        )
+      }));
+    } else {
+      setNewTool(prev => ({
+        ...prev,
+        features: prev.features.map((feature, i) => 
+          i === index ? { ...feature, [field]: value } : feature
+        )
+      }));
+    }
+  };
       toast.error('Failed to update tool');
+  const addPricingPlan = (isEditing: boolean = false) => {
+    const newPlan = { plan: '', price: '', features: '' };
+    if (isEditing) {
+      setEditingTool(prev => ({
+        ...prev,
+        pricing: [...(prev.pricing || []), newPlan]
+      }));
+    } else {
+      setNewTool(prev => ({
+        ...prev,
+        pricing: [...prev.pricing, newPlan]
+      }));
+    }
+  };
+    }
+  const removePricingPlan = (index: number, isEditing: boolean = false) => {
+    if (isEditing) {
+      setEditingTool(prev => ({
+        ...prev,
+        pricing: prev.pricing.filter((_: any, i: number) => i !== index)
+      }));
+    } else {
+      setNewTool(prev => ({
+        ...prev,
+        pricing: prev.pricing.filter((_, i) => i !== index)
+      }));
+    }
+  };
+  };
+  const updatePricingPlan = (index: number, field: 'plan' | 'price' | 'features', value: string, isEditing: boolean = false) => {
+    if (isEditing) {
+      setEditingTool(prev => ({
+        ...prev,
+        pricing: prev.pricing.map((plan: any, i: number) => 
+          i === index ? { ...plan, [field]: value } : plan
+        )
+      }));
+    } else {
+      setNewTool(prev => ({
+        ...prev,
+        pricing: prev.pricing.map((plan, i) => 
+          i === index ? { ...plan, [field]: value } : plan
+        )
+      }));
     }
   };
 
